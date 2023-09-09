@@ -43,7 +43,6 @@ export default function TypeRoom() {
   };
 
   const handleEdit = async (id) => {
-    setModal(true);
     setId(id);
     let url = await axios.get(
       `http://localhost:3000/tipekamar/${id}`,
@@ -54,6 +53,10 @@ export default function TypeRoom() {
     setHarga(respose.data.data.harga);
     setDeskripsi(response.ata.data.deskripsi);
     setFoto(respose.data.data.foto);
+    setModal(true);
+    setTimeout(() => {
+      setModal(true);
+    }, 8000);
   };
 
   const handleSave = (e) => {
@@ -187,7 +190,7 @@ export default function TypeRoom() {
           <p>No rooms available.</p>
         ) : (
           typeroom.map((item, index) => (
-            <div className="group relative block overflow-hidden rounded-md">
+            <div className="group relative block overflow-hidden rounded-md" key={index}>
               <button
                 className="absolute end-4 top-4 z-10 rounded-full bg-white p-1.5 text-gray-900 transition hover:text-sec hover:bg-primary"
                 onClick={() => handleEdit(item.id)}
@@ -244,9 +247,6 @@ export default function TypeRoom() {
                     <path d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1H2.5zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5zM8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5zm3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0z" />
                   </svg>
                 </button>
-                <a href={`/admin/history/add/${item.id}`} class="mt-4 block w-full rounded bg-primary/20 p-4 text-sm font-medium transition hover:scale-105 text-center">
-                  Book Now
-                </a>
               </div>
             </div>
           ))
@@ -268,7 +268,7 @@ export default function TypeRoom() {
                 for="nama_tipe_kamar"
                 className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-800"
               >
-                Name Room Type
+                Typeroom Name
               </label>
               <input
                 type="text"
@@ -277,7 +277,7 @@ export default function TypeRoom() {
                 value={nama_tipe_kamar}
                 onChange={(e) => setNamaTipeKamar(e.target.value)}
                 className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-gray-800 block w-full p-2.5 dark:bg-white dark:border-gray-500 dark:placeholder-gray-400 dark:text-gray-800"
-                placeholder="Masukkan name room type"
+                placeholder="Typeroom name"
                 required
               />
             </div>
@@ -286,7 +286,7 @@ export default function TypeRoom() {
                 for="harga"
                 className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-800"
               >
-                Price Room Type
+                Price
               </label>
               <input
                 type="number"
@@ -295,7 +295,7 @@ export default function TypeRoom() {
                 value={harga}
                 onChange={(e) => setHarga(e.target.value)}
                 className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-gray-800 block w-full p-2.5 dark:bg-white dark:border-gray-500 dark:placeholder-gray-400 dark:text-gray-800"
-                placeholder="Masukkan price room type"
+                placeholder="Price"
                 required
               />
             </div>
@@ -314,7 +314,7 @@ export default function TypeRoom() {
                 value={deskripsi}
                 onChange={(e) => setDeskripsi(e.target.deskripsi)}
                 className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-gray-800 block w-full p-2.5 dark:bg-white dark:border-gray-500 dark:placeholder-gray-400 dark:text-gray-800"
-                placeholder="Masukkan description room type"
+                placeholder="Description"
               />
             </div>
             <div>
@@ -322,13 +322,14 @@ export default function TypeRoom() {
                 for="foto"
                 className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-800"
               >
-                Photo Room Type
+                Photo
               </label>
               <input
                 type="file"
                 name="foto"
                 id="foto"
-                placeholder="Pilih foto tipe kamar"
+                value={foto}
+                placeholder="Select Typeroom Photo"
                 onChange={handleFile}
                 className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-gray-800 focus:border-gray-800 block w-full px-2 dark:bg-white dark:border-gray-500 dark:placeholder-gray-400 dark:text-gray-800"
                 required={action === "update" ? false : true}

@@ -3,13 +3,13 @@ import React, { useState } from "react";
 
 export default function Login() {
   const [email_user, setEmailUser] = useState("");
-  const [password_user, setPasswordUser] = useState("");
+  const [password, setPassword] = useState("");
 
   const handleLogin = (e) => {
     e.preventDefault();
     let data = {
       email: email_user,
-      password: password_user,
+      password: password,
     };
     let url = "http://localhost:3000/user/login";
     axios
@@ -19,9 +19,8 @@ export default function Login() {
         let token = response.data.data.token;
         let role = response.data.data.role;
         let email = response.data.data.email;
-        let password = response.data.data.password;
+        let password = response.data.data.password_user;
         let nama_user = response.data.data.nama_user;
-        //tambahi email + password
 
         localStorage.setItem("id", id);
         localStorage.setItem("token", token);
@@ -29,7 +28,6 @@ export default function Login() {
         localStorage.setItem("email", email);
         localStorage.setItem("password", password);
         localStorage.setItem("nama_user", nama_user);
-        //tambahi email + password
 
         alert("Login Berhasil");
         if (
@@ -41,7 +39,6 @@ export default function Login() {
           window.location.href = "/customer/home";
         }
       })
-      //Tambahi Handle error
       .catch((error) => {
         alert("Login failed. Please check your email and password.");
       });
@@ -49,38 +46,33 @@ export default function Login() {
 
   return (
     <>
-      {/* tambahi Style Frontend */}
-      <section className="relative bg-[url(/img/register_bg_2.png)] bg-cover bg-center bg-no-repeat flex flex-row min-h-screen">
-        <div className="z-99 bg-gray-500 w-96 h-[360px] rounded-xl mt-48 mx-auto shadow-md">
-          <form className="flex flex-col gap-4 m-8" onSubmit={handleLogin}>
-            <h1 className="font-bold text-3xl text-sec text-center">
-              TURU Hotel
-            </h1>
-            <p className="text-sec">
-              This is a secure system and you must provide login details You to
-              access hotel reservations
-            </p>
-            <input
-              className="bg-slate-200 rounded p-2 shadow"
-              value={email_user}
-              onChange={(e) => setEmailUser(e.target.value)}
-              placeholder="Email"
-              required
-            />
-            <input
-              className="bg-slate-200 rounded p-2 shadow"
-              value={password_user}
-              onChange={(e) => setPasswordUser(e.target.value)}
-              type="password"
-              placeholder="Password"
-              required
-            />
-            <button className="bg-slate-300 mx-auto rounded text-primary hover:text-slate-200 hover:bg-slate-600 font-bold py-2 px-[140px]">
-              Login
-            </button>
-          </form>
+      <div className="min-h-screen rounded flex items-center justify-center bg-gray-100">
+      <form className="bg-white p-8  rounded-lg shadow-md w-96" onSubmit={handleLogin}>
+        <h2 className="text-2xl font-semibold mb-4">Login</h2>
+        <div className="mb-4">
+          <label className="block text-gray-700 text-sm font-bold mb-2">Email</label>
+          <input type="email" className="w-full px-3 py-2 placeholder-gray-400 text-gray-700 border rounded-lg focus:outline-none focus:shadow-outline" placeholder="Email" value={email_user} onChange={(e) => setEmailUser(e.target.value)} />
         </div>
-      </section>
+        <div className="mb-4">
+          <label className="block text-gray-700 text-sm font-bold mb-2">Password</label>
+          <div className="relative">
+            <input
+              type="password"
+              className="w-full px-3 py-2 placeholder-gray-400 text-gray-700 border rounded-lg focus:outline-none focus:shadow-outline"
+              placeholder="Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+          </div>
+        </div>
+        <button
+          type="submit"
+          className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+        >
+          Login
+        </button>
+      </form>
+    </div>
     </>
   );
 }

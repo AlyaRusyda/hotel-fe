@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import Navbar from "@/components/Navbars/admin/navbar";
 import Footer from "@/components/Footers/footer";
 import Link from "next/link";
 import moment from "moment/moment";
 import Modal from "@/components/Modal/modal";
+import Navbar from "@/components/Navbars/customer/navbar";
 // import Modal from "@/components/Modal/modal";
 
 export default function History() {
@@ -30,21 +30,6 @@ export default function History() {
   const [role, setRole] = useState("");
   const [keyword, setKeyword] = useState("");
   const [modal, setModal] = useState(false);
-
-  const checkRole = () => {
-    if (localStorage.getItem("token")) {
-      if (
-        localStorage.getItem("role") === "admin" ||
-        localStorage.getItem("role") === "resepsionis"
-      ) {
-        setToken(localStorage.getItem("token"));
-        setRole(localStorage.getItem("role"));
-      } else {
-        window.alert("You're not admin or resepsionis!");
-        window.location = "/";
-      }
-    }
-  };
 
   const headerConfig = () => {
     let token = localStorage.getItem("token");
@@ -97,50 +82,9 @@ export default function History() {
       });
   };
 
-  const handleEditStatus = (reservation) => {
-    setModal(true);
-    setSelectedReservation(reservation);
-  };
-
-  const handleSaveStatus = () => {
-    if (!selectedReservation) {
-      return; // Return early if there is no selected reservation
-    }
-
-    const updatedStatus = selectedReservation.status_pemesanan;
-    const reservationId = selectedReservation.id;
-
-    axios
-      .put(
-        `http://localhost:3000/pesan/status/${reservationId}`,
-        { status_pemesanan: updatedStatus },
-        headerConfig()
-      )
-      .then((response) => {
-        if (response.status === 200) {
-          alert("Success edit status");
-          setModal(false); // Close the modal after successful update
-
-          // Update the 'status_pemesanan' value in the 'history' state
-          setHistory((prevHistory) =>
-            prevHistory.map((item) =>
-              item.id === reservationId
-                ? { ...item, status_pemesanan: updatedStatus }
-                : item
-            )
-          );
-        }
-      })
-      .catch((error) => {
-        console.log("error updating status", error.response.status);
-        if (error.response.status === 500) {
-          alert("Failed to update status");
-        }
-      });
-  };
-
   const getHistory = () => {
-    let url = "http://localhost:3000/pesan/getAll/";
+    const id = localStorage.getItem(("id"))
+    let url = `http://localhost:3000/pesan/getByUser/${id}`;
     axios
       .get(url, headerConfig())
       .then((response) => {
@@ -177,20 +121,7 @@ export default function History() {
   };
 
   useEffect(() => {
-    if (localStorage.getItem("token")) {
-      if (
-        localStorage.getItem("role") === "admin" ||
-        localStorage.getItem("role") === "resepsionis"
-      ) {
-        setToken(localStorage.getItem("token"));
-        setRole(localStorage.getItem("role"));
-      } else {
-        window.alert("You're not admin or resepsionis!");
-        window.location = "/";
-      }
-    }
     getHistory();
-    checkRole();
   }, []);
 
   return (
@@ -326,36 +257,6 @@ export default function History() {
                       </span>
                     )}
                   </td>
-                  {role === "resepsionis" && (
-                    <td className="whitespace-nowrap px-4 py-2 flex flex-row gap-2">
-                      <button
-                        className={`bg-green-600 hover:bg-green-700 text-white py-1 px-2 rounded mt-2 ${
-                          item.status_pemesanan === "check_out"
-                            ? "opacity-50 cursor-not-allowed"
-                            : ""
-                        }`}
-                        onClick={() => handleEditStatus(item)}
-                        disabled={item.status_pemesanan === "check_out"}
-                      >
-                        <span className="sr-only">Edit</span>
-
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="16"
-                          height="16"
-                          fill="currentColor"
-                          className="bi bi-pencil-square"
-                          viewBox="0 0 16 16"
-                        >
-                          <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
-                          <path
-                            fillRule="evenodd"
-                            d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"
-                          />
-                        </svg>
-                      </button>
-                    </td>
-                  )}
                 </tr>
               ))
             )}

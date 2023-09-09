@@ -80,7 +80,7 @@ const Navbar = () => {
                 {user && ( // Check if user is defined before using it
                   <div className="text-right ml-3 flex">
                     <span className="flex flex-col">
-                      <h2 className="text-md font-semibold">{user.email}</h2>
+                      <h2 className="text-md font-semibold capitalize">{user.nama_user}</h2>
                       <p className="text-gray-500">{user.role}</p>
                     </span>
                     <img

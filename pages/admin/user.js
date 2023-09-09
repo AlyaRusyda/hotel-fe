@@ -3,11 +3,12 @@ import axios from "axios";
 import Navbar from "@/components/Navbars/admin/navbar";
 import Footer from "@/components/Footers/footer";
 import Link from "next/link";
-// import Modal from "@/components/Modal/modal";
+import Modal from "@/components/Modal/modal";
 
 export default function User() {
   const [user, setUser] = useState([]);
   const [originalUser, setOriginalUser] = useState([]);
+  const [isClient, setIsClient] = useState("");
   const [id, setId] = useState("");
   const [nama_user, setNamaUser] = useState("");
   const [foto, setFoto] = useState("");
@@ -43,11 +44,15 @@ export default function User() {
     return header;
   };
 
+  useEffect(() => {
+    setIsClient(true)
+  }, [])
+
   const handleEdit = async (id) => {
     setModal(true);
     setId(id);
     let url = await axios.get(
-      `http://localhost:3000/tipekamar/${id}`,
+      `http://localhost:3000/user/${id}`,
       headerConfig
     );
     const data = response.data;
@@ -66,7 +71,7 @@ export default function User() {
     form.append("deskripsi", deskripsi);
     form.append("foto", foto);
 
-    let url = `http://localhost:3000/tipekamar/${id}`;
+    let url = `http://localhost:3000/user/update/${id}`;
     axios
       .put(url, form, headerConfig())
       .then((response) => {
@@ -161,7 +166,7 @@ export default function User() {
               onKeyUp={handleSearch}
               onChange={(e) => setKeyword(e.target.value)}
             />
-            {role === "admin" && (
+            {role === "admin" && isClient ? (
               <Link
                 className="ml-2 px-4 flex flex-row text-sec bg-primary rounded hover:bg-primary/30 hover:text-primary"
                 href="/admin/user/add"
@@ -178,7 +183,7 @@ export default function User() {
                 </svg>{" "}
                 <p className="mt-2 ml-1 font-normal">Add</p>
               </Link>
-            )}
+            ) : null}
           </div>
         </div>
       </div>
@@ -208,11 +213,11 @@ export default function User() {
           </thead>
 
           <tbody className="divide-y divide-gray-200 text-center">
-            {user.length === 0 ? (
+            {user.length === 0 && isClient ? (
               <p>No users available.</p>
             ) : (
               user.map((item, index) => (
-                <tr>
+                <tr key={index}>
                   <td className="whitespace-nowrap px-4 py-2 font-medium text-gray-900">
                     {index + 1}
                   </td>
@@ -235,7 +240,7 @@ export default function User() {
                     {item.role}
                   </td>
                   <td className="whitespace-nowrap px-4 py-2 flex flex-row gap-2">
-                    <button className="inline-block rounded bg-primary px-4 py-2 text-xs font-medium text-white hover:bg-sec hover:text-primary">
+                    <button onClick={() => handleEdit(item.id)} className="inline-block rounded bg-primary px-4 py-2 text-xs font-medium text-white hover:bg-sec hover:text-primary">
                       Edit
                     </button>
                     <button
@@ -253,10 +258,10 @@ export default function User() {
       </div>
       <Footer />
 
-      {/* <Modal isVisible={modal} close={() => setModal(false)}>
+      <Modal isVisible={modal} close={() => setModal(false)}>
         <div className="px-6 py-6 lg:px-8">
           <h3 className="mb-4 text-xl font-medium text-gray-900 dark:text-black">
-            Edit Type Room
+            Edit User Details
           </h3>
           <form
             className="space-y-6"
@@ -264,56 +269,72 @@ export default function User() {
           >
             <div>
               <label
-                for="nama_tipe_kamar"
+                for="nama_user"
                 className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-800"
               >
-                Name Room Type
+                Username
               </label>
               <input
                 type="text"
-                name="nama_tipe_kamar"
-                id="nama_tipe_kamar"
-                value={nama_tipe_kamar}
-                onChange={(e) => setNamaTipeKamar(e.target.value)}
+                name="nama_user"
+                id="nama_user"
+                value={nama_user}
+                onChange={(e) => setNamaUser(e.target.value)}
                 className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-gray-800 block w-full p-2.5 dark:bg-white dark:border-gray-500 dark:placeholder-gray-400 dark:text-gray-800"
-                placeholder="Masukkan name room type"
+                placeholder="Username"
                 required
               />
             </div>
             <div>
               <label
-                for="harga"
+                for="nama_user"
                 className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-800"
               >
-                Price Room Type
+                Photo User
               </label>
               <input
-                type="number"
-                name="harga"
-                id="harga"
-                value={harga}
-                onChange={(e) => setHarga(e.target.value)}
+                type="file"
+                name="foto"
+                id="foto"
+                value={foto}
+                onChange={handleFile}
                 className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-gray-800 block w-full p-2.5 dark:bg-white dark:border-gray-500 dark:placeholder-gray-400 dark:text-gray-800"
-                placeholder="Masukkan price room type"
+                required={action === "update" ? false : true}
+              />
+            </div>
+            <div>
+              <label
+                for="email"
+                className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-800"
+              >
+                Email
+              </label>
+              <input
+                type="email"
+                name="email"
+                id="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-gray-800 block w-full p-2.5 dark:bg-white dark:border-gray-500 dark:placeholder-gray-400 dark:text-gray-800"
+                placeholder="Email"
                 required
               />
             </div>
             <div>
               <label
-                for="deskripsi"
+                for="password"
                 className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-800"
               >
-                Description Room Type
+                Password
               </label>
-              <textarea
-                rows="3"
-                type="text"
-                name="deskripsi"
-                id="deskripsi"
-                value={deskripsi}
-                onChange={(e) => setDeskripsi(e.target.deskripsi)}
+              <input
+                type="password"
+                name="password"
+                id="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.deskripsi)}
                 className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-gray-800 block w-full p-2.5 dark:bg-white dark:border-gray-500 dark:placeholder-gray-400 dark:text-gray-800"
-                placeholder="Masukkan description room type"
+                placeholder="Password"
               />
             </div>
             <div>
@@ -321,17 +342,19 @@ export default function User() {
                 for="foto"
                 className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-800"
               >
-                Photo Room Type
+                Role
               </label>
-              <input
-                type="file"
-                name="foto"
-                id="foto"
-                placeholder="Pilih foto tipe kamar"
-                onChange={handleFile}
-                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-gray-800 focus:border-gray-800 block w-full px-2 dark:bg-white dark:border-gray-500 dark:placeholder-gray-400 dark:text-gray-800"
-                required={action === "update" ? false : true}
-              />
+              <select
+                name="role"
+                id="role"
+                value={role}
+                className="p-2 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-gray-800 focus:border-gray-800 block w-full px-2 dark:bg-white dark:border-gray-500 dark:placeholder-gray-400 dark:text-gray-800"
+              >
+                <option value="">Select role</option>
+                <option value="admin">Admin</option>
+                <option value="resepsionis">Resepsionis</option>
+                <option value="customer">Customer</option>
+              </select>
             </div>
 
             <button
@@ -342,7 +365,7 @@ export default function User() {
             </button>
           </form>
         </div>
-      </Modal> */}
+      </Modal>
     </>
   );
 }

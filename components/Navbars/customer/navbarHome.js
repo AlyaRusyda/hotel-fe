@@ -89,22 +89,12 @@ const Navbar = () => {
                 </Link>
               </li>
             ))}
-            <li className="flex pr-32 z-10" onClick={() => logOut()}>
-              <Link
-                href="/"
-                className="flex items-center px-4 mb-1 border-b-2 border-transparent hover:text-blue-300 uppercase"
-              >
-                <span className="ml-2" onClick={() => logOut()}>
-                  Logout
-                </span>
-              </Link>
-            </li>
             <li className="py-2 z-0">
               <button onClick={handleOpenModal}>
                 {user && ( // Check if user is defined before using it
                   <div className="text-right ml-3 flex">
                     <span className="flex flex-col">
-                      <h2 className="text-md font-semibold">{user.email}</h2>
+                      <h2 className="text-md font-semibold capitalize">{user.nama_user}</h2>
                       <p className="text-gray-500">{user.role}</p>
                     </span>
                     <img
