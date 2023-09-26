@@ -2,47 +2,52 @@ import axios from "axios";
 import React, { useState } from "react";
 
 export default function Login() {
-  const [email_user, setEmailUser] = useState("");
+  const [id, setId] = useState("");
+  const [nama_user, setNamaUser] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [role, setRole] = useState("");
+  const [foto, setFoto] = useState(null);
 
-  const handleLogin = (e) => {
+  const handleAdd = (e) => {
     e.preventDefault();
-    let data = {
-      email: email_user,
-      password: password,
-    };
-    let url = "http://localhost:3000/user/login";
+    let form = new FormData();
+    form.append("id", id);
+    form.append("nama_user", nama_user);
+    form.append("email", email);
+    form.append("password", password);
+    form.append("role", role);
+    form.append("foto", foto);
+
+    let url = "http://localhost:3000/user/add";
     axios
-      .post(url, data)
+      .post(url, form)
       .then((response) => {
-        let id = response.data.data.id;
-        let token = response.data.data.token;
-        let role = response.data.data.role;
-        let email = response.data.data.email;
-        let password = response.data.data.password_user;
-        let nama_user = response.data.data.nama_user;
-
-        localStorage.setItem("id", id);
-        localStorage.setItem("token", token);
-        localStorage.setItem("role", role);
-        localStorage.setItem("email", email);
-        localStorage.setItem("password", password);
-        localStorage.setItem("nama_user", nama_user);
-
-        alert("Login Berhasil");
-        if (
-          localStorage.getItem("role") === "admin" ||
-          localStorage.getItem("role") === "resepsionis"
-        ) {
-          window.location.href = "/admin/home";
-        } else if (localStorage.getItem("role") === "customer") {
-          window.location.href = "/customer/home";
+        if (response.status === 200) {
+          console.log(response.data);
+          alert("Success add data");
+          window.location.href = "../login";
         }
       })
       .catch((error) => {
-        alert("Login failed. Please check your email and password.");
+        console.log("error add data", error.response.status);
+        if (error.response.status === 500) {
+          alert("Failed to add data");
+        }
       });
   };
+
+  const handleFile = (e) => {
+    setFoto(e.target.files[0]);
+  };
+
+  // const headerConfig = () => {
+  //   let token = localStorage.getItem("token");
+  //   let header = {
+  //     headers: { Authorization: `Bearer ${token}` },
+  //   };
+  //   return header;
+  // };
 
   return (
     <>
@@ -101,13 +106,31 @@ export default function Login() {
               </div>
 
               <form
-                onSubmit={handleLogin}
+                onSubmit={handleAdd}
                 className="mt-8 grid grid-cols-6 gap-6"
               >
                 <div className="col-span-6">
-                  <h1 className="font-bold text-3xl mb-8 text-primary">Login</h1>
+                <h1 className="font-bold text-3xl mb-8 text-primary">Register</h1>
                   <label
                     htmlFor="nama_user"
+                    className="block text-sm font-medium text-gray-700"
+                  >
+                    Name
+                  </label>
+
+                  <input
+                    type="text"
+                    name="nama_user"
+                    className="w-full px-3 py-2 placeholder-gray-400 text-gray-700 border rounded-lg"
+                    placeholder="Name"
+                    value={nama_user}
+                    onChange={(e) => setNamaUser(e.target.value)}
+                  />
+                </div>
+
+                <div className="col-span-6">
+                  <label
+                    htmlFor="email"
                     className="block text-sm font-medium text-gray-700"
                   >
                     Email
@@ -115,11 +138,11 @@ export default function Login() {
 
                   <input
                     type="email"
-                    name="nama_user"
+                    name="email"
                     className="w-full px-3 py-2 placeholder-gray-400 text-gray-700 border rounded-lg"
                     placeholder="Email"
-                    value={email_user}
-                    onChange={(e) => setEmailUser(e.target.value)}
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
                   />
                 </div>
 
@@ -141,20 +164,56 @@ export default function Login() {
                   />
                 </div>
 
-                <div className="col-span-6 flex-col sm:flex sm:items-center sm:gap-4">
+                <div className="col-span-6">
+                  <label
+                    htmlFor="foto"
+                    className="block text-sm font-medium text-gray-700"
+                  >
+                    Photo
+                  </label>
+
+                  <input
+                    className="w-full px-3 py-2 placeholder-gray-400 text-gray-700 border rounded-lg"
+                    type="file"
+                    name="foto"
+                    onChange={handleFile}
+                    placeholder="User Photo"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label
+                    htmlFor="role"
+                    className="text-sm font-medium text-gray-700 hidden"
+                  >
+                    Role
+                  </label>
+
+                  <input
+                    // className="w-full px-3 py-2 placeholder-gray-400 text-gray-700 border rounded-lg"
+                    type="hidden"
+                    name="role"
+                    value="customer"
+                    onChange={(e) => setRole(customer)}
+                    required
+                  />
+                </div>
+
+                <div className="col-span-6 flex-col sm:flex sm:items-center sm:gap-2">
                   <button className="inline-block shrink-0 rounded-md border bg-primary px-40 py-3 text-sm font-medium text-white transition hover:bg-primary/30 focus:border-none focus:outline-none focus:ring active:text-primary/80">
-                    Login
+                    Create an account
                   </button>
 
                   <p className="mt-4 text-sm text-gray-500 sm:mt-0">
-                    Don't have an account?
-                    <a
-                      href="/customer/register"
-                      className="ml-1 font-bold text-gray-700 underline"
-                    >
-                      Register
+                    Already have an account? 
+                    <a href="../login" className="ml-1 font-bold text-gray-700 underline">
+                      Log in
                     </a>
                     .
+                  </p>
+                  <p className="text-sm text-gray-500 sm:mt-0">
+                    Ask to admin if you an employee
                   </p>
                 </div>
               </form>

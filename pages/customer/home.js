@@ -110,29 +110,36 @@ export default function Login() {
         </div>
         <div className="w-1/3 mx-[32%] -mt-20 absolute">
               <form className="flex flex-row gap-4 w-[600px]" onSubmit={handleSubmit}>
-                <input
+                <div className="flex flex-col">
+                  <label className="text-sec text-md mb-2">Check In</label>
+                  <input
                   type="date"
                   name="tgl_check_in"
                   value={tgl_check_in}
                   onChange={(e) => setCheckIn(e.target.value)}
-                  className="p-5 w-48 rounded-md shadow-md"
+                  className="p-4 w-48 rounded-md shadow-md"
                   required
-                />
-                <input
+                  />
+                </div>
+                <div className="flex flex-col">
+                  <label className="text-sec text-md mb-2">Check Out</label>
+                  <input
                   type="date"
                   name="tgl_check_out"
                   value={tgl_check_out}
                   onChange={(e) => setCheckOut(e.target.value)}
-                  className="p-5 w-48 rounded-md shadow-md"
+                  className="p-4 w-48 rounded-md shadow-md"
                   required
                 />
-                <button className="bg-primary text-sec p-2 rounded-md w-24 shadow-md">
+                </div>
+                
+                <button className="bg-primary text-sec p-2 rounded-md w-24 shadow-md mt-8">
                   Search
                 </button>
               </form>
             </div> 
 
-            <div className="py-8 grid grid-cols-2 lg:grid-cols-4 gap-6 px-20">
+            <div className="py-8 grid grid-cols-2 lg:grid-cols-4 gap-6 px-20 mt-8">
         {avail.length === 0 ? (
           <div className="m-6"></div>
         ) : (

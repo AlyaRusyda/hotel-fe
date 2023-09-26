@@ -43,45 +43,6 @@ export default function History() {
     setIsClient(true)
   }, [])
 
-  const handleEdit = async (id) => {
-    setModal(true);
-    setId(id);
-    let url = await axios.get(
-      `http://localhost:3000/pesan/${id}`,
-      headerConfig
-    );
-    const data = response.data;
-    setNamaTipeKamar(response.data.data.nama_tipe_kamar);
-    setHarga(respose.data.data.harga);
-    setDeskripsi(response.ata.data.deskripsi);
-    setFoto(respose.data.data.foto);
-  };
-
-  const handleSave = (e) => {
-    e.preventDefault();
-    let form = new FormData();
-    form.append("id", id);
-    form.append("nama_tipe_kamar", nama_tipe_kamar);
-    form.append("harga", harga);
-    form.append("deskripsi", deskripsi);
-    form.append("foto", foto);
-
-    let url = `http://localhost:3000/pesan/${id}`;
-    axios
-      .put(url, form, headerConfig())
-      .then((response) => {
-        if (response.status === 200) {
-          alert("Success edit data");
-        }
-      })
-      .catch((error) => {
-        console.log("error add data", error.response.status);
-        if (error.response.status === 500) {
-          alert("Failed to add data");
-        }
-      });
-  };
-
   const getHistory = () => {
     const id = localStorage.getItem(("id"))
     let url = `http://localhost:3000/pesan/getByUser/${id}`;
@@ -96,29 +57,17 @@ export default function History() {
       });
   };
 
-  const getTypeRoom = () => {
-    let url = "http://localhost:3000/tipekamar/getAll/";
-    axios
-      .get(url, headerConfig())
-      .then((response) => {
-        setTyperoom(response.data.data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
-
-  const handleSearch = async () => {
-    try {
-      await setHistory(
-        originalHistory.filter((type) => {
-          return type.status_pemesanan.includes(keyword);
-        })
-      );
-    } catch (error) {
-      alert(error);
-    }
-  };
+  // const getTypeRoom = () => {
+  //   let url = "http://localhost:3000/tipekamar/getAll/";
+  //   axios
+  //     .get(url, headerConfig())
+  //     .then((response) => {
+  //       setTyperoom(response.data.data);
+  //     })
+  //     .catch((error) => {
+  //       console.log(error);
+  //     });
+  // };
 
   useEffect(() => {
     getHistory();
@@ -129,41 +78,6 @@ export default function History() {
       <Navbar />
       <div className="px-20 font-bold mt-28 text-primary flex flex-row">
         <h1 className="text-2xl md:text-3xl w-60">History List</h1>
-        <div className="flex items-center ml-auto">
-          <div className="flex rounded">
-            <select
-              className="block px-4 py-2 bg-slate-200 border font-normal rounded-md focus:border-primary/10 focus:ring-primary/20 focus:outline-none focus:ring focus:ring-opacity-40"
-              placeholder="Type room"
-              name="keyword"
-              value={keyword}
-              onSubmit={handleSearch}
-              onChange={(e) => setKeyword(e.target.value)}
-            >
-              <option value="">Select Status</option>
-              <option value="baru">Baru</option>
-              <option value="check_in">Check In</option>
-              <option value="check_out">Check Out</option>
-            </select>
-            {role === "admin" && isClient ? (
-              <Link
-                className="ml-2 px-4 flex flex-row text-sec bg-primary rounded hover:bg-primary/30 hover:text-primary"
-                href="/admin/pesan/add"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="16"
-                  height="16"
-                  fill="currentColor"
-                  viewBox="0 0 16 16"
-                  className="mt-3 -ml-2"
-                >
-                  <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
-                </svg>{" "}
-                <p className="mt-2 ml-1 font-normal">Add</p>
-              </Link>
-            ) : null}
-          </div>
-        </div>
       </div>
       <div className="overflow-x-auto mt-8 px-20 mb-52">
         <table className="w-full divide-y-2 divide-primary/20 bg-sec/20 text-sm">
