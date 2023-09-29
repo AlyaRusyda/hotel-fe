@@ -10,6 +10,7 @@ export default function Login() {
   const [nomor_kamar, setNomorKamar] = useState("");
   const [tgl_check_in, setCheckIn] = useState("");
   const [tgl_check_out, setCheckOut] = useState("");
+  const [typeroom, setTyperoom] = useState("")
   const [role, setRole] = useState("");
   const [token, setToken] = useState("");
 
@@ -36,11 +37,24 @@ export default function Login() {
     return header;
   };
 
+  const getTypeRoom = () => {
+    let url = "http://localhost:3000/tipekamar/getAll/";
+    axios
+      .get(url, headerConfig())
+      .then((response) => {
+        setTyperoom(response.data.data);
+        setOriginalTyperoom(response.data.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     let form = new FormData();
     form.append("tgl_check_in", tgl_check_in);
-    form.append("tgl_check_out", tgl_check_out)
+    form.append("tgl_check_out", tgl_check_out);
 
     let url = "http://localhost:3000/kamar/getAvailable";
     axios

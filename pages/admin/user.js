@@ -48,28 +48,24 @@ export default function User() {
     setIsClient(true)
   }, [])
 
-  const handleEdit = async (id) => {
+  const handleEdit = async (item) => {
     setModal(true);
-    setId(id);
-    let url = await axios.get(
-      `http://localhost:3000/user/${id}`,
-      headerConfig
-    );
-    const data = response.data;
-    setNamaTipeKamar(response.data.data.nama_tipe_kamar);
-    setHarga(respose.data.data.harga);
-    setDeskripsi(response.ata.data.deskripsi);
-    setFoto(respose.data.data.foto);
+    console.log(item)
+    
+    setId(item.id)
+    setNamaUser(item.nama_user);
+    setEmail(item.email);
+    setFoto(item.foto);
+    setRole(item.role)
   };
 
   const handleSave = (e) => {
     e.preventDefault();
     let form = new FormData();
-    form.append("id", id);
-    form.append("nama_tipe_kamar", nama_tipe_kamar);
-    form.append("harga", harga);
-    form.append("deskripsi", deskripsi);
+    form.append("nama_user", nama_user);
     form.append("foto", foto);
+    form.append("email", email);
+    form.append("role", role)
 
     let url = `http://localhost:3000/user/update/${id}`;
     axios
@@ -77,11 +73,12 @@ export default function User() {
       .then((response) => {
         if (response.status === 200) {
           alert("Success edit data");
+          window.location.href = "/admin/user"
         }
       })
       .catch((error) => {
-        console.log("error add data", error.response.status);
-        if (error.response.status === 500) {
+        console.log("error add data", error);
+        if (error.status === 500) {
           alert("Failed to add data");
         }
       });
@@ -222,7 +219,7 @@ export default function User() {
                     {index + 1}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="flex-shrink-0 h-10 w-10">
+                    <div className="flex-shrink-0 h-10 w-10 mx-auto">
                       <img
                         className="h-10 w-10 rounded-full"
                         src={"http://localhost:3000/foto/" + item.foto}
@@ -239,8 +236,8 @@ export default function User() {
                   <td className="whitespace-nowrap px-4 py-2 text-gray-700">
                     {item.role}
                   </td>
-                  <td className="whitespace-nowrap px-4 py-2 flex flex-row gap-2">
-                    <button onClick={() => handleEdit(item.id)} className="inline-block rounded bg-primary px-4 py-2 text-xs font-medium text-white hover:bg-sec hover:text-primary">
+                  <td className="whitespace-nowrap px-4 py-2 flex flex-row gap-2 justify-center">
+                    <button onClick={() => handleEdit(item)} className="inline-block rounded bg-primary px-4 py-2 text-xs font-medium text-white hover:bg-sec hover:text-primary">
                       Edit
                     </button>
                     <button
@@ -296,7 +293,6 @@ export default function User() {
                 type="file"
                 name="foto"
                 id="foto"
-                value={foto}
                 onChange={handleFile}
                 className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-gray-800 block w-full p-2.5 dark:bg-white dark:border-gray-500 dark:placeholder-gray-400 dark:text-gray-800"
                 required={action === "update" ? false : true}
@@ -322,23 +318,6 @@ export default function User() {
             </div>
             <div>
               <label
-                for="password"
-                className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-800"
-              >
-                Password
-              </label>
-              <input
-                type="password"
-                name="password"
-                id="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.deskripsi)}
-                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-gray-800 block w-full p-2.5 dark:bg-white dark:border-gray-500 dark:placeholder-gray-400 dark:text-gray-800"
-                placeholder="Password"
-              />
-            </div>
-            <div>
-              <label
                 for="foto"
                 className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-800"
               >
@@ -359,7 +338,7 @@ export default function User() {
 
             <button
               type="submit"
-              className="w-full text-white bg-gradient-to-br from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2"
+              className="w-full text-white bg-primary hover:bg-primary/80 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2"
             >
               Simpan
             </button>

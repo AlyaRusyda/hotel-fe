@@ -50,44 +50,71 @@ export default function Login() {
 
   return (
     <>
-      <section className="relative bg-[url(/img/register_bg_2.png)] bg-cover bg-center bg-no-repeat flex flex-row min-h-screen">
-        <div className="z-99 w-96 rounded-xl mx-auto shadow-md">
-          <form className="flex flex-col gap-4 m-8" onSubmit={handleAdd}>
-            <h1 className="font-bold text-3xl text-sec text-center">
-              Add Tipe Kamar
-            </h1>
-            <input
-              className="bg-slate-200 rounded p-2 shadow"
-              value={nama_user}
-              onChange={(e) => setNamaUser(e.target.value)}
-              placeholder="User Name"
-              required
-            />
-            <input
-              className="bg-slate-200 rounded p-2 shadow"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              type="email"
-              placeholder="Email"
-              required
-            />
-            <input
-              className="bg-slate-200 rounded p-2 shadow"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              type="password"
-              placeholder="Password"
-              required
-            />
-            <input
-              className="bg-slate-200 rounded p-2 shadow"
-              type="file"
-              onChange={handleFile}
-              placeholder="User Photo"
-              required
-            />
-            <select
-              className="bg-slate-200 text-sm rounded-lg focus:ring-slate-500 focus:border-slate-800 block w-full p-2.5"
+      <div
+        className="absolute top-0 w-full h-full bg-center bg-cover -z-20"
+        style={{
+          backgroundImage:
+            "url('https://images.unsplash.com/photo-1631049307264-da0ec9d70304?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1770&q=80')",
+        }}
+      >
+        <span
+          id="blackOverlay"
+          className="w-full h-full absolute opacity-50 bg-black"
+        ></span>
+      </div>
+      <div className="mx-auto mt-16 flex flex-col max-w-md p-6 rounded-md sm:p-10 bg-gray-50 text-gray-800 shadow-xl z-50">
+        <div className="mb-8 text-center">
+          <h1 className="my-3 text-4xl font-bold text-primary">New Typeroom</h1>
+          <p className="text-sm text-gray-600">Add a new typeroom</p>
+        </div>
+        <form className="space-y-12" onSubmit={handleAdd}>
+          <div className="space-y-4">
+            <div>
+              <label className="block mb-2 text-sm">User Name</label>
+              <input
+                value={nama_user}
+                onChange={(e) => setNamaUser(e.target.value)}
+                placeholder="User Name"
+                className="w-full px-3 py-2 border rounded-md border-gray-300 bg-gray-50 text-gray-800"
+                required
+              />
+            </div>
+            <div>
+              <label className="block mb-2 text-sm">Email User</label>
+              <input
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                type="email"
+                placeholder="Email"
+                className="w-full px-3 py-2 border rounded-md border-gray-300 bg-gray-50 text-gray-800"
+                required
+              />
+            </div>
+            <div>
+              <label className="block mb-2 text-sm">Password</label>
+              <input
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                type="password"
+                placeholder="Password"
+                className="w-full px-3 py-2 border rounded-md border-gray-300 bg-gray-50 text-gray-800"
+                required
+              />
+            </div>
+            <div>
+              <label className="block mb-2 text-sm">Photo</label>
+              <input
+                type="file"
+                onChange={handleFile}
+                placeholder="User Photo"
+                className="w-full px-3 py-2 border rounded-md border-gray-300 bg-gray-50 text-gray-800"
+                required
+              />
+            </div>
+            <div>
+              <label className="block mb-2 text-sm">Role</label>
+              <select
+              className="w-full px-3 py-2 border rounded-md border-gray-300 bg-gray-50 text-gray-800"
               placeholder="Role User"
               name="role"
               value={role}
@@ -99,12 +126,16 @@ export default function Login() {
               <option value="resepsionis">Resepsionis</option>
               <option value="customer">Customer</option>
             </select>
-            <button className="bg-slate-300 mx-auto rounded text-primary hover:text-slate-200 hover:bg-slate-600 font-bold py-2 px-[140px]">
-              Add
-            </button>
-          </form>
-        </div>
-      </section>
+            </div>
+          </div>
+          <button
+            type="submit"
+            className="w-full px-8 py-3 font-semibold rounded-md bg-primary text-gray-50"
+          >
+            Add
+          </button>
+        </form>
+      </div>
     </>
   );
 }

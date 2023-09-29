@@ -183,19 +183,11 @@ export default function Login() {
                 </div>
 
                 <div>
-                  <label
-                    htmlFor="role"
-                    className="text-sm font-medium text-gray-700 hidden"
-                  >
-                    Role
-                  </label>
-
                   <input
-                    // className="w-full px-3 py-2 placeholder-gray-400 text-gray-700 border rounded-lg"
                     type="hidden"
                     name="role"
                     value="customer"
-                    onChange={(e) => setRole(customer)}
+                    onChange={(e) => setRole(e.target.value)}
                     required
                   />
                 </div>

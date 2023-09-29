@@ -327,7 +327,7 @@ export default function History() {
                     )}
                   </td>
                   {role === "resepsionis" && (
-                    <td className="whitespace-nowrap px-4 py-2 flex flex-row gap-2">
+                    <td className="whitespace-nowrap px-4 py-2 flex flex-row gap-2 justify-center">
                       <button
                         className={`bg-green-600 hover:bg-green-700 text-white py-1 px-2 rounded mt-2 ${
                           item.status_pemesanan === "check_out"
@@ -398,7 +398,7 @@ export default function History() {
               <button
                 type="button"
                 onClick={handleSaveStatus}
-                className="w-full text-white bg-gradient-to-br from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2"
+                className="w-full text-white bg-primary hover:bg-primary/80 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2"
               >
                 Simpan
               </button>

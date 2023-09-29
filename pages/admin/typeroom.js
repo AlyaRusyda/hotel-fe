@@ -42,27 +42,23 @@ export default function TypeRoom() {
     return header;
   };
 
-  const handleEdit = async (id) => {
-    setId(id);
-    let url = await axios.get(
-      `http://localhost:3000/tipekamar/${id}`,
-      headerConfig
-    );
-    const data = response.data;
-    setNamaTipeKamar(response.data.data.nama_tipe_kamar);
-    setHarga(respose.data.data.harga);
-    setDeskripsi(response.ata.data.deskripsi);
-    setFoto(respose.data.data.foto);
+  const handleEdit = async (item) => {
     setModal(true);
-    setTimeout(() => {
-      setModal(true);
-    }, 8000);
+    console.log('item', item)
+    try {
+      setId(item.id);
+      setNamaTipeKamar(item.nama_tipe_kamar)
+      setHarga(item.harga);
+      setDeskripsi(item.deskripsi);
+      setFoto(item.foto)
+    } catch (error) {
+      console.error("Error fetching room data:", error);
+    }
   };
 
   const handleSave = (e) => {
     e.preventDefault();
     let form = new FormData();
-    form.append("id", id);
     form.append("nama_tipe_kamar", nama_tipe_kamar);
     form.append("harga", harga);
     form.append("deskripsi", deskripsi);
@@ -74,6 +70,7 @@ export default function TypeRoom() {
       .then((response) => {
         if (response.status === 200) {
           alert("Success edit data");
+          window.location.href = "/admin/typeroom"
         }
       })
       .catch((error) => {
@@ -147,7 +144,7 @@ export default function TypeRoom() {
     getTypeRoom();
     checkRole();
   }, []);
-
+  
   return (
     <>
       <Navbar />
@@ -193,7 +190,7 @@ export default function TypeRoom() {
             <div className="group relative block overflow-hidden rounded-md" key={index}>
               <button
                 className="absolute end-4 top-4 z-10 rounded-full bg-white p-1.5 text-gray-900 transition hover:text-sec hover:bg-primary"
-                onClick={() => handleEdit(item.id)}
+                onClick={() => handleEdit(item)}
               >
                 <span className="sr-only">Edit</span>
 
@@ -328,17 +325,15 @@ export default function TypeRoom() {
                 type="file"
                 name="foto"
                 id="foto"
-                value={foto}
                 placeholder="Select Typeroom Photo"
                 onChange={handleFile}
                 className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-gray-800 focus:border-gray-800 block w-full px-2 dark:bg-white dark:border-gray-500 dark:placeholder-gray-400 dark:text-gray-800"
-                required={action === "update" ? false : true}
               />
             </div>
 
             <button
               type="submit"
-              className="w-full text-white bg-gradient-to-br from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2"
+              className="w-full text-white bg-primary hover:bg-primary/80 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2"
             >
               Simpan
             </button>

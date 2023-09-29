@@ -57,18 +57,6 @@ export default function History() {
       });
   };
 
-  // const getTypeRoom = () => {
-  //   let url = "http://localhost:3000/tipekamar/getAll/";
-  //   axios
-  //     .get(url, headerConfig())
-  //     .then((response) => {
-  //       setTyperoom(response.data.data);
-  //     })
-  //     .catch((error) => {
-  //       console.log(error);
-  //     });
-  // };
-
   useEffect(() => {
     getHistory();
   }, []);
@@ -140,7 +128,7 @@ export default function History() {
                     {item.nama_tamu}
                   </td>
                   <td className="whitespace-nowrap px-4 py-2 text-gray-700">
-                    {item.tipe_kamar?.nama_tipe_kamar}
+                  {item.tipe_kamar?.nama_tipe_kamar}
                   </td>
                   <td className="whitespace-nowrap px-4 py-2 text-gray-700">
                     {item.jumlah_kamar}

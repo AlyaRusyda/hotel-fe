@@ -11,6 +11,7 @@ const Navbar = () => {
   const [modal, setModal] = useState(false);
   const menuLinks = [
     { name: "Home", link: "/customer/home" },
+    { name: "Typeroom", link: "/customer/typeroom" },
     { name: "History", link: "/customer/history" },
   ];
 
@@ -57,7 +58,7 @@ const Navbar = () => {
             href="/"
             className="flex items-center justify-start uppercase font-bold"
           >
-            <span className="text-2xl md:text-3xl w-60 hover:text-blue-800">
+            <span className="text-2xl md:text-3xl w-60 hover:opacity-50">
               turu hotel
             </span>
           </Link>

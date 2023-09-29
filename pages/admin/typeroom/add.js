@@ -10,19 +10,19 @@ export default function Login() {
 
   const handleAdd = (e) => {
     e.preventDefault();
-    let form = new FormData()
-        form.append("id", id)
-        form.append("nama_tipe_kamar", nama_tipe_kamar)
-        form.append("harga", harga)
-        form.append("deskripsi", deskripsi)
-        form.append("foto", foto)
+    let form = new FormData();
+    form.append("id", id);
+    form.append("nama_tipe_kamar", nama_tipe_kamar);
+    form.append("harga", harga);
+    form.append("deskripsi", deskripsi);
+    form.append("foto", foto);
 
     let url = "http://localhost:3000/tipekamar/";
     axios
       .post(url, form, headerConfig())
       .then((response) => {
+        console.log("Response data:", response.data);
         if (response.status === 200) {
-          
           alert("Success add data");
           window.location.href = "/admin/typeroom";
         }
@@ -49,47 +49,75 @@ export default function Login() {
 
   return (
     <>
-      <section className="relative bg-[url(/img/register_bg_2.png)] bg-cover bg-center bg-no-repeat flex flex-row min-h-screen">
-        <div className="z-99 w-96 rounded-xl mx-auto shadow-md">
-          <form className="flex flex-col gap-4 m-8" onSubmit={handleAdd}>
-            <h1 className="font-bold text-3xl text-sec text-center">
-              Add Tipe Kamar
-            </h1>
-            <input
-              className="bg-slate-200 rounded p-2 shadow"
-              value={nama_tipe_kamar}
-              onChange={(e) => setNamaTipeKamar(e.target.value)}
-              placeholder="Typeroom Name"
-              required
-            />
-            <input
-              className="bg-slate-200 rounded p-2 shadow"
-              value={harga}
-              onChange={(e) => setHarga(e.target.value)}
-              type="number"
-              placeholder="Price"
-              required
-            />
-            <input
-              className="bg-slate-200 rounded p-2 shadow"
-              value={deskripsi}
-              onChange={(e) => setDeskripsi(e.target.value)}
-              placeholder="Description"
-              required
-            />
-            <input
-              className="bg-slate-200 rounded p-2 shadow"
-              type="file"
-              onChange={handleFile}
-              placeholder="Room Photo"
-              required
-            />
-            <button className="bg-slate-300 mx-auto rounded text-primary hover:text-slate-200 hover:bg-slate-600 font-bold py-2 px-[140px]">
-              Add
-            </button>
-          </form>
+      <div
+        className="absolute top-0 w-full h-full bg-center bg-cover -z-20"
+        style={{
+          backgroundImage:
+            "url('https://images.unsplash.com/photo-1631049307264-da0ec9d70304?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1770&q=80')",
+        }}
+      >
+        <span
+          id="blackOverlay"
+          className="w-full h-full absolute opacity-50 bg-black"
+        ></span>
+      </div>
+      <div className="mx-auto mt-16 flex flex-col max-w-md p-6 rounded-md sm:p-10 bg-gray-50 text-gray-800 shadow-xl z-50">
+        <div className="mb-8 text-center">
+          <h1 className="my-3 text-4xl font-bold text-primary">New Typeroom</h1>
+          <p className="text-sm text-gray-600">Add a new typeroom</p>
         </div>
-      </section>
+        <form className="space-y-12" onSubmit={handleAdd}>
+          <div className="space-y-4">
+            <div>
+              <label className="block mb-2 text-sm">Typeroom Name</label>
+              <input
+                value={nama_tipe_kamar}
+                onChange={(e) => setNamaTipeKamar(e.target.value)}
+                placeholder="Typeroom Name"
+                className="w-full px-3 py-2 border rounded-md border-gray-300 bg-gray-50 text-gray-800"
+                required
+              />
+            </div>
+            <div>
+              <label className="block mb-2 text-sm">Price</label>
+              <input
+                value={harga}
+                onChange={(e) => setHarga(e.target.value)}
+                type="number"
+                placeholder="Price"
+                className="w-full px-3 py-2 border rounded-md border-gray-300 bg-gray-50 text-gray-800"
+                required
+              />
+            </div>
+            <div>
+              <label className="block mb-2 text-sm">Description</label>
+              <input
+                value={deskripsi}
+                onChange={(e) => setDeskripsi(e.target.value)}
+                placeholder="Description"
+                className="w-full px-3 py-2 border rounded-md border-gray-300 bg-gray-50 text-gray-800"
+                required
+              />
+            </div>
+            <div>
+              <label className="block mb-2 text-sm">Photo</label>
+              <input
+                type="file"
+                onChange={handleFile}
+                placeholder="Room Photo"
+                className="w-full px-3 py-2 border rounded-md border-gray-300 bg-gray-50 text-gray-800"
+                required
+              />
+            </div>
+          </div>
+          <button
+            type="submit"
+            className="w-full px-8 py-3 font-semibold rounded-md bg-primary text-gray-50"
+          >
+            Add
+          </button>
+        </form>
+      </div>
     </>
   );
 }
