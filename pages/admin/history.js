@@ -13,22 +13,12 @@ export default function History() {
   const [typeroom, setTyperoom] = useState([]);
   const [isClient, setIsClient] = useState("");
   const [id, setId] = useState("");
-  const [userId, setuserId] = useState("");
-  const [tipeKamarId, setTipeKamarId] = useState("");
-  const [nomor_pemesanan, setNomorPemesanan] = useState("");
-  const [nama_pemesan, setNamaPemesan] = useState("");
-  const [email_pemesan, setEmail] = useState("");
-  const [tgl_pemesanan, setTgl] = useState("");
-  const [tgl_check_in, setCheckIn] = useState("");
-  const [tgl_check_out, setCheckOut] = useState("");
-  const [nama_tamu, setNamaTamu] = useState("");
-  const [jumlah_kamar, setJumlahKamar] = useState("");
-  const [status_pemesanan, setStatus] = useState("");
   const [token, setToken] = useState("");
-  const [action, setAction] = useState("");
   const [selectedReservation, setSelectedReservation] = useState(null);
   const [role, setRole] = useState("");
   const [keyword, setKeyword] = useState("");
+  const [input, setInput] = useState("");
+  const [tgl, setTgl] = useState("");
   const [modal, setModal] = useState(false);
 
   const checkRole = () => {
@@ -55,8 +45,8 @@ export default function History() {
   };
 
   useEffect(() => {
-    setIsClient(true)
-  }, [])
+    setIsClient(true);
+  }, []);
 
   const handleEdit = async (id) => {
     setModal(true);
@@ -164,16 +154,32 @@ export default function History() {
       });
   };
 
-  const handleSearch = async () => {
-    try {
-      await setHistory(
-        originalHistory.filter((type) => {
-          return type.status_pemesanan.includes(keyword);
-        })
-      );
-    } catch (error) {
-      alert(error);
-    }
+  const handleSearch = (e) => {
+    const value = e.target.value.toLowerCase();
+    setKeyword(value);
+    const filteredHistory = originalHistory.filter((type) => {
+      return type.status_pemesanan.toLowerCase().includes(value);
+    });
+    setHistory(filteredHistory);
+  };
+
+  const handleSearchNama = (e) => {
+    const input = e.target.value.toLowerCase();
+    setInput(input);
+    const filteredHistory = originalHistory.filter((type) => {
+      return type.nama_tamu.toLowerCase().includes(input);
+    });
+    setHistory(filteredHistory);
+  };
+
+  const handleSearchTgl = (e) => {
+    const value = e.target.value.toLowerCase();
+    setTgl(value);
+    const filteredHistory = originalHistory.filter((type) => {
+      const formattedCheckInDate = type.tgl_check_in.split('T')[0]; 
+      return formattedCheckInDate.includes(value);
+    });
+    setHistory(filteredHistory);
   };
 
   useEffect(() => {
@@ -199,38 +205,37 @@ export default function History() {
       <div className="px-20 font-bold mt-28 text-primary flex flex-row">
         <h1 className="text-2xl md:text-3xl w-60">History List</h1>
         <div className="flex items-center ml-auto">
-          <div className="flex rounded">
+          <div className="flex rounded gap-2">
+          <input
+              type="text"
+              className="block px-4 py-2 bg-white border font-normal rounded-md focus:border-priamry/10 focus:ring-primary/20 focus:outline-none focus:ring focus:ring-opacity-40"
+              placeholder="Guest Name..."
+              name="input"
+              value={input}
+              onKeyUp={handleSearchNama}
+              onChange={(e) => setInput(e.target.value)}
+            />
+            <input
+              type="date"
+              className="block px-4 py-2 bg-white border font-normal rounded-md focus:border-priamry/10 focus:ring-primary/20 focus:outline-none focus:ring focus:ring-opacity-40"
+              placeholder="Tanggal..."
+              name="tgl"
+              value={tgl}
+              onKeyUp={handleSearchTgl}
+              onChange={(e) => setTgl(e.target.value)}
+            />
             <select
               className="block px-4 py-2 bg-slate-200 border font-normal rounded-md focus:border-primary/10 focus:ring-primary/20 focus:outline-none focus:ring focus:ring-opacity-40"
-              placeholder="Type room"
+              placeholder="Status"
               name="keyword"
               value={keyword}
-              onSubmit={handleSearch}
-              onChange={(e) => setKeyword(e.target.value)}
+              onChange={handleSearch}
             >
               <option value="">Select Status</option>
               <option value="baru">Baru</option>
               <option value="check_in">Check In</option>
               <option value="check_out">Check Out</option>
             </select>
-            {role === "admin" && isClient ? (
-              <Link
-                className="ml-2 px-4 flex flex-row text-sec bg-primary rounded hover:bg-primary/30 hover:text-primary"
-                href="/admin/pesan/add"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="16"
-                  height="16"
-                  fill="currentColor"
-                  viewBox="0 0 16 16"
-                  className="mt-3 -ml-2"
-                >
-                  <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
-                </svg>{" "}
-                <p className="mt-2 ml-1 font-normal">Add</p>
-              </Link>
-            ) : null}
           </div>
         </div>
       </div>
@@ -269,9 +274,9 @@ export default function History() {
                 Status
               </th>
               {role === "resepsionis" && (
-              <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900">
-                Action
-              </th>
+                <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900">
+                  Action
+                </th>
               )}
             </tr>
           </thead>

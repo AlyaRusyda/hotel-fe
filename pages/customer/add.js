@@ -1,83 +1,141 @@
-import React, { useState } from "react";
 import axios from "axios";
+import React, { useState } from "react";
 
-function Add() {
-  const [nama_pemesan, setNamaPemesan] = useState("");
-  const [email_pemesan, setEmailPemesan] = useState("");
-  const [nama_tamu, setNamaTamu] = useState("");
-  const [jumlah_kamar, setJumlahKamar] = useState("");
+export default function Login() {
+  const [id, setId] = useState("");
+  const [nama_user, setNamaUser] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [role, setRole] = useState("");
+  const [foto, setFoto] = useState(null);
 
-  const handleSubmit = (e) => {
+  const handleAdd = (e) => {
     e.preventDefault();
-    
-    // Ganti URL sesuai dengan endpoint addPemesanan Anda
-    let url = "http://localhost:3000/pesan/";
+    let form = new FormData();
+    form.append("id", id);
+    form.append("nama_user", nama_user);
+    form.append("email", email);
+    form.append("password", password);
+    form.append("role", role);
+    form.append("foto", foto);
 
-    const data = {
-      nama_pemesan,
-      email_pemesan,
-      nama_tamu,
-      jumlah_kamar,
-      // Tambahkan field lain yang diperlukan sesuai dengan kebutuhan Anda
-    };
-
+    let url = "http://localhost:3000/user/add";
     axios
-      .post(url, data)
+      .post(url, form, headerConfig())
       .then((response) => {
-        if (response.data.success) {
-          alert("Pemesanan berhasil!");
-          window.location.href = "/customer/home";
-          // Redirect ke halaman lain atau lakukan aksi lain sesuai kebutuhan
-        } else {
-          alert("Pemesanan gagal: " + response.data.message);
+        if (response.status === 200) {
+          alert("Success add data");
+          window.location.href = "/admin/user";
         }
       })
       .catch((error) => {
-        alert("Terjadi kesalahan: " + error.message);
+        console.log("error add data", error.response.status);
+        if (error.response.status === 500) {
+          alert("Failed to add data");
+        }
       });
   };
 
+  const handleFile = (e) => {
+    setFoto(e.target.files[0]);
+  };
+
+  const headerConfig = () => {
+    let token = localStorage.getItem("token");
+    let header = {
+      headers: { Authorization: `Bearer ${token}` },
+    };
+    return header;
+  };
+
   return (
-    <div>
-      <h2>Form Pemesanan</h2>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label>Nama Pemesan</label>
-          <input
-            type="text"
-            value={nama_pemesan}
-            onChange={(e) => setNamaPemesan(e.target.value)}
-          />
+    <>
+      <div
+        className="absolute top-0 w-full h-full bg-center bg-cover -z-20"
+        style={{
+          backgroundImage:
+            "url('https://images.unsplash.com/photo-1631049307264-da0ec9d70304?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1770&q=80')",
+        }}
+      >
+        <span
+          id="blackOverlay"
+          className="w-full h-full absolute opacity-50 bg-black"
+        ></span>
+      </div>
+      <div className="mx-auto mt-8 flex flex-col max-w-md p-6 rounded-md sm:p-10 bg-gray-50 text-gray-800 shadow-xl z-50">
+        <div className="mb-8 text-center">
+          <h1 className="my-3 text-4xl font-bold text-primary">New Typeroom</h1>
+          <p className="text-sm text-gray-600">Add a new typeroom</p>
         </div>
-        <div>
-          <label>Email Pemesan</label>
-          <input
-            type="email"
-            value={email_pemesan}
-            onChange={(e) => setEmailPemesan(e.target.value)}
-          />
-        </div>
-        <div>
-          <label>Nama Tamu</label>
-          <input
-            type="text"
-            value={nama_tamu}
-            onChange={(e) => setNamaTamu(e.target.value)}
-          />
-        </div>
-        <div>
-          <label>Jumlah Kamar</label>
-          <input
-            type="number"
-            value={jumlah_kamar}
-            onChange={(e) => setJumlahKamar(e.target.value)}
-          />
-        </div>
-        {/* Tambahkan input untuk field lain yang diperlukan */}
-        <button type="submit">Pesan Kamar</button>
-      </form>
-    </div>
+        <form className="space-y-12" onSubmit={handleAdd}>
+          <div className="space-y-4">
+            <div>
+              <label className="block mb-2 text-sm">User Name</label>
+              <input
+                value={nama_user}
+                onChange={(e) => setNamaUser(e.target.value)}
+                placeholder="User Name"
+                className="w-full px-3 py-2 border rounded-md border-gray-300 bg-gray-50 text-gray-800"
+                required
+              />
+            </div>
+            <div>
+              <label className="block mb-2 text-sm">Email User</label>
+              <input
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                type="email"
+                placeholder="Email"
+                className="w-full px-3 py-2 border rounded-md border-gray-300 bg-gray-50 text-gray-800"
+                required
+              />
+            </div>
+            <div>
+              <label className="block mb-2 text-sm">Password</label>
+              <input
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                type="password"
+                placeholder="Password"
+                className="w-full px-3 py-2 border rounded-md border-gray-300 bg-gray-50 text-gray-800"
+                required
+              />
+            </div>
+            <div>
+              <label className="block mb-2 text-sm">Photo</label>
+              <input
+                type="file"
+                onChange={handleFile}
+                placeholder="User Photo"
+                className="w-full px-3 py-2 border rounded-md border-gray-300 bg-gray-50 text-gray-800"
+                required
+              />
+            </div>
+            <div>
+              <label className="block mb-2 text-sm">Role</label>
+              <select
+              className="w-full px-3 py-2 border rounded-md border-gray-300 bg-gray-50 text-gray-800"
+              placeholder="Role User"
+              name="role"
+              value={role}
+              onChange={(e) => setRole(e.target.value)}
+              required
+            >
+              <option value="">Select Role User</option>
+              <option value="admin">Admin</option>
+              <option value="resepsionis">Resepsionis</option>
+              <option value="customer">Customer</option>
+            </select>
+            </div>
+          </div>
+          <button
+            type="submit"
+            className="w-full px-8 py-3 font-semibold rounded-md bg-primary text-gray-50"
+          >
+            Add
+          </button>
+        </form>
+      </div>
+    </>
   );
 }
-
-export default Add;

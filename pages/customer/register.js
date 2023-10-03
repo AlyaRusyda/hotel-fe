@@ -6,7 +6,7 @@ export default function Login() {
   const [nama_user, setNamaUser] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [role, setRole] = useState("");
+  const [role, setRole] = useState("customer");
   const [foto, setFoto] = useState(null);
 
   const handleAdd = (e) => {
@@ -40,14 +40,6 @@ export default function Login() {
   const handleFile = (e) => {
     setFoto(e.target.files[0]);
   };
-
-  // const headerConfig = () => {
-  //   let token = localStorage.getItem("token");
-  //   let header = {
-  //     headers: { Authorization: `Bearer ${token}` },
-  //   };
-  //   return header;
-  // };
 
   return (
     <>

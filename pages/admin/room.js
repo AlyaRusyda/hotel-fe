@@ -132,9 +132,17 @@ export default function Room() {
     }
   };
 
-  const handleSearch = () => {
+  // const handleSarch = () => {
+  //   const filteredRooms = originalRoom.filter((room) => {
+  //     return room.tipe_kamar?.id === parseInt(keyword);
+  //   });
+  //   setRoom(filteredRooms);
+  // };
+  const handleSearch = (e) => {
+    const value = e.target.value.toLowerCase();
+    setKeyword(value);
     const filteredRooms = originalRoom.filter((room) => {
-      return room.tipe_kamar?.id === parseInt(keyword);
+      return room.tipeKamarId === parseInt(value);
     });
     setRoom(filteredRooms);
   };
@@ -154,12 +162,11 @@ export default function Room() {
         <div className="flex items-center ml-auto">
           <div className="flex rounded ">
             <select
-              name="tipeKamarId"
-              id="tipeKamarId"
-              value={tipeKamarId}
-              onChange={(e) => setTipeKamarId(e.target.value)}
               className="block px-4 py-2 bg-slate-200 border font-normal rounded-md focus:border-primary/10 focus:ring-primary/20 focus:outline-none focus:ring focus:ring-opacity-40"
-              required
+              placeholder="Status"
+              name="keyword"
+              value={keyword}
+              onChange={handleSearch}
             >
               <option value="">Select Type Room</option>
               {typeroom.map((item) => (
@@ -206,9 +213,11 @@ export default function Room() {
               <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900">
                 Price
               </th>
+              {role === "admin" && (
               <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900">
                 Action
               </th>
+              )}
             </tr>
           </thead>
 
@@ -230,6 +239,7 @@ export default function Room() {
                   <td className="whitespace-nowrap px-4 py-2 text-gray-700">
                     {item.tipe_kamar?.harga}
                   </td>
+                  {role === "admin" && (
                   <td className="whitespace-nowrap py-2 flex flex-row gap-2 justify-center">
                     <button
                       onClick={() => handleEdit(item)}
@@ -244,6 +254,7 @@ export default function Room() {
                       Delete
                     </button>
                   </td>
+                  )}
                 </tr>
               ))
             )}

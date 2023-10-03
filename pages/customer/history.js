@@ -1,34 +1,17 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Footer from "@/components/Footers/footer";
-import Link from "next/link";
 import moment from "moment/moment";
 import Modal from "@/components/Modal/modal";
 import Navbar from "@/components/Navbars/customer/navbar";
-// import Modal from "@/components/Modal/modal";
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
 
 export default function History() {
   const [history, setHistory] = useState([]);
   const [originalHistory, setOriginalHistory] = useState([]);
-  const [typeroom, setTyperoom] = useState([]);
   const [isClient, setIsClient] = useState("");
-  const [id, setId] = useState("");
-  const [userId, setuserId] = useState("");
-  const [tipeKamarId, setTipeKamarId] = useState("");
-  const [nomor_pemesanan, setNomorPemesanan] = useState("");
-  const [nama_pemesan, setNamaPemesan] = useState("");
-  const [email_pemesan, setEmail] = useState("");
-  const [tgl_pemesanan, setTgl] = useState("");
-  const [tgl_check_in, setCheckIn] = useState("");
-  const [tgl_check_out, setCheckOut] = useState("");
-  const [nama_tamu, setNamaTamu] = useState("");
-  const [jumlah_kamar, setJumlahKamar] = useState("");
-  const [status_pemesanan, setStatus] = useState("");
-  const [token, setToken] = useState("");
-  const [action, setAction] = useState("");
   const [selectedReservation, setSelectedReservation] = useState(null);
-  const [role, setRole] = useState("");
-  const [keyword, setKeyword] = useState("");
   const [modal, setModal] = useState(false);
 
   const headerConfig = () => {
@@ -39,12 +22,8 @@ export default function History() {
     return header;
   };
 
-  useEffect(() => {
-    setIsClient(true)
-  }, [])
-
   const getHistory = () => {
-    const id = localStorage.getItem(("id"))
+    const id = localStorage.getItem("id");
     let url = `http://localhost:3000/pesan/getByUser/${id}`;
     axios
       .get(url, headerConfig())
@@ -56,8 +35,13 @@ export default function History() {
         console.log(error);
       });
   };
+  
+  // generateInvoice = (props) => {
+
+  // }
 
   useEffect(() => {
+    setIsClient(true);
     getHistory();
   }, []);
 
@@ -101,11 +85,9 @@ export default function History() {
               <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900">
                 Status
               </th>
-              {role === "resepsionis" && (
               <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900">
-                Action
+                Print
               </th>
-              )}
             </tr>
           </thead>
 
@@ -128,7 +110,7 @@ export default function History() {
                     {item.nama_tamu}
                   </td>
                   <td className="whitespace-nowrap px-4 py-2 text-gray-700">
-                  {item.tipe_kamar?.nama_tipe_kamar}
+                    {item.tipe_kamar?.nama_tipe_kamar}
                   </td>
                   <td className="whitespace-nowrap px-4 py-2 text-gray-700">
                     {item.jumlah_kamar}
@@ -158,6 +140,25 @@ export default function History() {
                         Check Out
                       </span>
                     )}
+                  </td>
+                  <td className="whitespace-nowrap px-4 py-2 flex flex-row gap-2 justify-center">
+                    <a
+                      className="bg-blue-600 hover:bg-blue-700 text-white py-1 px-2 rounded mt-2"
+                      href={`/customer/history/${item.id}`}
+                    >
+                      <span className="sr-only">Print</span>
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="16"
+                        height="16"
+                        fill="currentColor"
+                        className="bi bi-printer-fill"
+                        viewBox="0 0 16 16"
+                      >
+                        <path d="M5 1a2 2 0 0 0-2 2v1h10V3a2 2 0 0 0-2-2H5zm6 8H5a1 1 0 0 0-1 1v3a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-3a1 1 0 0 0-1-1z" />
+                        <path d="M0 7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2h-1v-2a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v2H2a2 2 0 0 1-2-2V7zm2.5 1a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1z" />
+                      </svg>
+                    </a>
                   </td>
                 </tr>
               ))

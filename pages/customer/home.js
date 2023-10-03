@@ -10,6 +10,7 @@ export default function Login() {
   const [nomor_kamar, setNomorKamar] = useState("");
   const [tgl_check_in, setCheckIn] = useState("");
   const [tgl_check_out, setCheckOut] = useState("");
+  const[jumlah_kamar, setJumlahKamar] = useState("");
   const [typeroom, setTyperoom] = useState("")
   const [role, setRole] = useState("");
   const [token, setToken] = useState("");
@@ -55,20 +56,25 @@ export default function Login() {
     let form = new FormData();
     form.append("tgl_check_in", tgl_check_in);
     form.append("tgl_check_out", tgl_check_out);
-
-    let url = "http://localhost:3000/kamar/getAvailable";
-    axios
-      .post(url, form, headerConfig())
-      .then((response) => {
-        if(response.status === 200) {
-          setAvail(response.data.data);
-        }
-        console.log(response.data.data)
-      })
-      .catch((error) => {
-        alert("Failed");
-      });
+  
+    // Simpan tgl_check_in dan tgl_check_out ke dalam localStorage
+    localStorage.setItem("tgl_check_in", tgl_check_in);
+    localStorage.setItem("tgl_check_out", tgl_check_out);
+  
+    // let url = "http://localhost:3000/kamar/getAvailable";
+    // axios
+    //   .post(url, form, headerConfig())
+    //   .then((response) => {
+    //     if (response.status === 200) {
+    //       setAvail(response.data.data);
+    //     }
+    //     console.log(response.data.data);
+    //   })
+    //   .catch((error) => {
+    //     alert("Failed");
+    //   });
   };
+  
 
   return (
     <>
@@ -147,38 +153,18 @@ export default function Login() {
                 />
                 </div>
                 
-                <button className="bg-primary text-sec p-2 rounded-md w-24 shadow-md mt-8">
+                <button className="bg-primary text-sec p-2 rounded-md w-24 shadow-md mt-8" onClick={getTypeRoom}>
                   Search
                 </button>
               </form>
             </div> 
 
             <div className="py-8 grid grid-cols-2 lg:grid-cols-4 gap-6 px-20 mt-8">
-        {avail.length === 0 ? (
+        {typeroom.length === 0 ? (
           <div className="m-6"></div>
         ) : (
-          avail.map((item, index) => (
+          typeroom.map((item, index) => (
             <div className="group relative block overflow-hidden rounded-md">
-              <button
-                className="absolute end-4 top-4 z-10 rounded-full bg-white p-1.5 text-gray-900 transition hover:text-sec hover:bg-primary"
-              >
-                <span className="sr-only">Edit</span>
-
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="16"
-                  height="16"
-                  fill="currentColor"
-                  className="bi bi-pencil-square"
-                  viewBox="0 0 16 16"
-                >
-                  <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
-                  <path
-                    fillRule="evenodd"
-                    d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"
-                  />
-                </svg>
-              </button>
 
               <img
                 src={"http://localhost:3000/foto/" + item.foto}
@@ -197,7 +183,7 @@ export default function Login() {
                 </h3>
 
                 <p className="mt-1.5 text-sm text-gray-700">{item.deskripsi}</p>
-                <a href={`/customer/add`} class="mt-4 block w-full rounded bg-primary/20 p-4 text-sm font-medium transition hover:scale-105 text-center">
+                <a href={`/customer/add/${item.nama_tipe_kamar}`} className="mt-4 block w-full rounded bg-primary/20 p-4 text-sm font-medium transition hover:scale-105 text-center">
                   Book Now
                 </a>
               </div>

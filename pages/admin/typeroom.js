@@ -188,6 +188,7 @@ export default function TypeRoom() {
         ) : (
           typeroom.map((item, index) => (
             <div className="group relative block overflow-hidden rounded-md" key={index}>
+              {role === "admin" && (
               <button
                 className="absolute end-4 top-4 z-10 rounded-full bg-white p-1.5 text-gray-900 transition hover:text-sec hover:bg-primary"
                 onClick={() => handleEdit(item)}
@@ -209,6 +210,7 @@ export default function TypeRoom() {
                   />
                 </svg>
               </button>
+              )}
 
               <img
                 src={"http://localhost:3000/foto/" + item.foto}
@@ -227,6 +229,7 @@ export default function TypeRoom() {
                 </h3>
 
                 <p className="mt-1.5 text-sm text-gray-700">{item.deskripsi}</p>
+                {role === "admin" && (
                 <button
                   className="absolute end-4 top-4 z-10 rounded-full bg-rose-200 p-1.5 text-red-500 transition hover:text-sec hover:bg-rose-500"
                   onClick={() => handleDrop(item.id)}
@@ -244,6 +247,7 @@ export default function TypeRoom() {
                     <path d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1H2.5zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5zM8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5zm3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0z" />
                   </svg>
                 </button>
+                )}
               </div>
             </div>
           ))

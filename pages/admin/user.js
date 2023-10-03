@@ -203,9 +203,11 @@ export default function User() {
               <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900">
                 Role
               </th>
+              {role === "admin" && (
               <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900">
                 Action
               </th>
+              )}
             </tr>
           </thead>
 
@@ -236,6 +238,7 @@ export default function User() {
                   <td className="whitespace-nowrap px-4 py-2 text-gray-700">
                     {item.role}
                   </td>
+                  {role === "admin" && (
                   <td className="whitespace-nowrap px-4 py-2 flex flex-row gap-2 justify-center">
                     <button onClick={() => handleEdit(item)} className="inline-block rounded bg-primary px-4 py-2 text-xs font-medium text-white hover:bg-sec hover:text-primary">
                       Edit
@@ -247,6 +250,7 @@ export default function User() {
                       Delete
                     </button>
                   </td>
+                  )}
                 </tr>
               ))
             )}
