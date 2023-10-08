@@ -1,9 +1,25 @@
 import axios from "axios";
-import React, { useState } from "react";
+import { useRouter } from "next/router";
+import React, { useState, useEffect } from "react";
+import { isAuthenticated } from "./auth";
 
 export default function Login() {
   const [email_user, setEmailUser] = useState("");
   const [password, setPassword] = useState("");
+  const router = useRouter();
+
+  useEffect(() => {
+    if (isAuthenticated()) {
+      const role = localStorage.getItem("role");
+      if (role === "admin" || role === "resepsionis") {
+        alert("Sign out to exit the page");
+        router.push("/admin/home"); // Redirect ke dashboard admin/resepsionis jika sudah login
+      } else if (role === "customer") {
+        alert("Sign out to exit the page");
+        router.push("/customer/home"); // Redirect ke dashboard customer jika sudah login
+      }
+    }
+  }, []);   
 
   const handleLogin = (e) => {
     e.preventDefault();

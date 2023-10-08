@@ -121,12 +121,12 @@ export default function Login() {
                 ))}
               </select>
             </div>
-          </div>
           {error && (
-            <div className="bg-red-200 text-red-800 p-2 rounded-md">
+            <div className="bg-red-200 text-red-800 p-2 rounded-md text-sm">
               Error: {error} 
             </div>
           )}
+          </div>
           <button
             type="submit"
             className="w-full px-8 py-3 font-semibold rounded-md bg-primary text-gray-50"

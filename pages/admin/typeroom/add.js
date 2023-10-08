@@ -118,12 +118,12 @@ export default function Login() {
                 required
               />
             </div>
-          </div>
           {error && (
-            <div className="bg-red-200 text-red-800 p-2 mb-4 rounded-md">
+            <div className="bg-red-200 text-red-800 p-2 mb-4 rounded-md text-sm">
               Error: {error} {/* Display the error message */}
             </div>
           )}
+          </div>
           <button
             type="submit"
             className="w-full px-8 py-3 font-semibold rounded-md bg-primary text-gray-50"

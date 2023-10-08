@@ -140,12 +140,12 @@ export default function Login() {
                 <option value="customer">Customer</option>
               </select>
             </div>
-          </div>
-          {error && (
-            <div className="bg-red-200 text-red-800 p-2 mb-4 rounded-md">
+            {error && (
+            <div className="bg-red-200 text-red-800 p-2 mb-4 rounded-md text-sm">
               Error: {error} {/* Menampilkan pesan kesalahan */}
             </div>
           )}
+          </div>
           <button
             type="submit"
             className="w-full px-8 py-3 font-semibold rounded-md bg-primary text-gray-50"
