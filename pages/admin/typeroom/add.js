@@ -23,7 +23,7 @@ export default function Login() {
       .post(url, form, headerConfig())
       .then((response) => {
         console.log("Response data:", response.data);
-        if (response.data.message == `File size is too largee`) {
+        if (response.data.message == `File size is too large`) {
           setError("File size is too large. Please upload a smaller file.");
         } else if (response.data.message == `Tipe kamar yang anda inputkan sudah ada`) {
           setError("Typeroom already exist. Please change the typeroom")
