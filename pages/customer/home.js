@@ -44,7 +44,6 @@ export default function Login() {
       .get(url, headerConfig())
       .then((response) => {
         setTyperoom(response.data.data);
-        setOriginalTyperoom(response.data.data);
       })
       .catch((error) => {
         console.log(error);
@@ -60,19 +59,6 @@ export default function Login() {
     // Simpan tgl_check_in dan tgl_check_out ke dalam localStorage
     localStorage.setItem("tgl_check_in", tgl_check_in);
     localStorage.setItem("tgl_check_out", tgl_check_out);
-  
-    // let url = "http://localhost:3000/kamar/getAvailable";
-    // axios
-    //   .post(url, form, headerConfig())
-    //   .then((response) => {
-    //     if (response.status === 200) {
-    //       setAvail(response.data.data);
-    //     }
-    //     console.log(response.data.data);
-    //   })
-    //   .catch((error) => {
-    //     alert("Failed");
-    //   });
   };
   
 
@@ -128,7 +114,7 @@ export default function Login() {
             </svg>
           </div>
         </div>
-        <div className="w-1/3 mx-[32%] -mt-20 absolute">
+        <div className="w-1/3 mx-[32%] -mt-40 absolute">
               <form className="flex flex-row gap-4 w-[600px]" onSubmit={handleSubmit}>
                 <div className="flex flex-col">
                   <label className="text-sec text-md mb-2">Check In</label>
@@ -153,7 +139,7 @@ export default function Login() {
                 />
                 </div>
                 
-                <button className="bg-primary text-sec p-2 rounded-md w-24 shadow-md mt-8" onClick={getTypeRoom}>
+                <button className="bg-primary text-sec shadow-md shadow-sec/20 p-2 rounded-md w-24 mt-8" onClick={getTypeRoom}>
                   Search
                 </button>
               </form>

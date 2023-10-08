@@ -20,12 +20,14 @@ export default function Login() {
         let role = response.data.data.role;
         let email = response.data.data.email;
         let nama_user = response.data.data.nama_user;
+        let foto = response.data.data.foto;
 
         localStorage.setItem("id", id);
         localStorage.setItem("token", token);
         localStorage.setItem("role", role);
         localStorage.setItem("email", email);
         localStorage.setItem("nama_user", nama_user);
+        localStorage.setItem("foto", foto);
 
         alert("Login Berhasil");
         if (

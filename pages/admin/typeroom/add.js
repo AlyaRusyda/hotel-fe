@@ -7,6 +7,7 @@ export default function Login() {
   const [harga, setHarga] = useState("");
   const [deskripsi, setDeskripsi] = useState("");
   const [foto, setFoto] = useState(null);
+  const [error, setError] = useState(null);
 
   const handleAdd = (e) => {
     e.preventDefault();
@@ -22,15 +23,23 @@ export default function Login() {
       .post(url, form, headerConfig())
       .then((response) => {
         console.log("Response data:", response.data);
-        if (response.status === 200) {
+        if (response.data.message == `File size is too largee`) {
+          setError("File size is too large. Please upload a smaller file.");
+        } else if (response.data.message == `Tipe kamar yang anda inputkan sudah ada`) {
+          setError("Typeroom already exist. Please change the typeroom")
+        } 
+        else if (response.status === 200) {
+          console.log(response.data);
           alert("Success add data");
-          window.location.href = "/admin/typeroom";
+          window.location.href = "/admin/user";
         }
       })
       .catch((error) => {
-        console.log("error add data", error.response.status);
-        if (error.response.status === 500) {
-          alert("Failed to add data");
+        console.log("error add data", error.response);
+        if (error.response.status === 400) {
+          setError(error.response.data.message); // Set error message from the response
+        } else {
+          setError("An error occurred while processing your request."); // Generic error message
         }
       });
   };
@@ -110,6 +119,11 @@ export default function Login() {
               />
             </div>
           </div>
+          {error && (
+            <div className="bg-red-200 text-red-800 p-2 mb-4 rounded-md">
+              Error: {error} {/* Display the error message */}
+            </div>
+          )}
           <button
             type="submit"
             className="w-full px-8 py-3 font-semibold rounded-md bg-primary text-gray-50"

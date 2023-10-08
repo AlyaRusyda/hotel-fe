@@ -8,6 +8,7 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const [role, setRole] = useState("customer");
   const [foto, setFoto] = useState(null);
+  const [error, setError] = useState(null);
 
   const handleAdd = (e) => {
     e.preventDefault();
@@ -23,10 +24,14 @@ export default function Login() {
     axios
       .post(url, form)
       .then((response) => {
-        if (response.status === 200) {
+        if (response.data.message == `File size is too large`) {
+          setError("File size is too large. Please upload a smaller file.");
+        } else if (response.data.message == `Validation error`) {
+          setError("Email already exist. Please change your email");
+        } else if (response.status === 200) {
           console.log(response.data);
           alert("Success add data");
-          window.location.href = "../login";
+          window.location.href = "/admin/user";
         }
       })
       .catch((error) => {
@@ -102,7 +107,9 @@ export default function Login() {
                 className="mt-8 grid grid-cols-6 gap-6"
               >
                 <div className="col-span-6">
-                <h1 className="font-bold text-3xl mb-8 text-primary">Register</h1>
+                  <h1 className="font-bold text-3xl mb-8 text-primary">
+                    Register
+                  </h1>
                   <label
                     htmlFor="nama_user"
                     className="block text-sm font-medium text-gray-700"
@@ -172,6 +179,11 @@ export default function Login() {
                     placeholder="User Photo"
                     required
                   />
+                  {error && (
+                    <div className="bg-red-200 text-red-800 p-2 mb-4 rounded-md mt-2 -mb-8">
+                      Error: {error} {/* Menampilkan pesan kesalahan */}
+                    </div>
+                  )}
                 </div>
 
                 <div>
@@ -190,8 +202,11 @@ export default function Login() {
                   </button>
 
                   <p className="mt-4 text-sm text-gray-500 sm:mt-0">
-                    Already have an account? 
-                    <a href="../login" className="ml-1 font-bold text-gray-700 underline">
+                    Already have an account?
+                    <a
+                      href="../login"
+                      className="ml-1 font-bold text-gray-700 underline"
+                    >
                       Log in
                     </a>
                     .

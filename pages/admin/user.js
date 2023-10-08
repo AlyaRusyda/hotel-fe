@@ -19,6 +19,7 @@ export default function User() {
   const [token, setToken] = useState("");
   const [action, setAction] = useState("");
   const [keyword, setKeyword] = useState("");
+  const [roles, setRoles] = useState("");
   const [modal, setModal] = useState(false);
 
   const checkRole = () => {
@@ -86,12 +87,12 @@ export default function User() {
 
   const handleDrop = (id) => {
     let url = `http://localhost:3000/user/${id}`;
-    if (window.confirm("Are you sure to delete this user? ")) {
+    if (window.confirm("Are you sure to delete this type room ? ")) {
       axios
         .delete(url, headerConfig())
         .then((response) => {
           console.log(response.data.message);
-          getTypeRoom();
+          getAllUser();
         })
         .catch((error) => {
           if (error.response.status === 500) {
@@ -99,6 +100,15 @@ export default function User() {
           }
         });
     }
+  };
+
+  const handelFilter = (e) => {
+    const value = e.target.value.toLowerCase();
+    setRoles(value);
+    const filteredUser = originalUser.filter((type) => {
+      return type.role.toLowerCase().includes(value);
+    });
+    setUser(filteredUser);
   };
 
   const handleFile = (e) => {
@@ -153,7 +163,7 @@ export default function User() {
       <div className="px-20 font-bold mt-28 text-primary flex flex-row">
         <h1 className="text-2xl md:text-3xl w-60">User List</h1>
         <div className="flex items-center ml-auto">
-          <div className="flex rounded ">
+          <div className="flex rounded gap-2">
             <input
               type="text"
               className="block px-4 py-2 bg-white border font-normal rounded-md focus:border-priamry/10 focus:ring-primary/20 focus:outline-none focus:ring focus:ring-opacity-40"
@@ -163,9 +173,21 @@ export default function User() {
               onKeyUp={handleSearch}
               onChange={(e) => setKeyword(e.target.value)}
             />
+            <select
+              className="block px-4 py-2 bg-slate-200 border font-normal rounded-md focus:border-primary/10 focus:ring-primary/20 focus:outline-none focus:ring focus:ring-opacity-40"
+              placeholder="Role"
+              name="roles"
+              value={roles}
+              onChange={handelFilter}
+            >
+              <option value="">Select Role</option>
+              <option value="admin">Admin</option>
+              <option value="resepsionis">Resepsionis</option>
+              <option value="customer">Customer</option>
+            </select>
             {role === "admin" && isClient ? (
               <Link
-                className="ml-2 px-4 flex flex-row text-sec bg-primary rounded hover:bg-primary/30 hover:text-primary"
+                className="px-4 flex flex-row text-sec bg-primary rounded hover:bg-primary/30 hover:text-primary"
                 href="/admin/user/add"
               >
                 <svg
@@ -299,7 +321,6 @@ export default function User() {
                 id="foto"
                 onChange={handleFile}
                 className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-gray-800 block w-full p-2.5 dark:bg-white dark:border-gray-500 dark:placeholder-gray-400 dark:text-gray-800"
-                required={action === "update" ? false : true}
               />
             </div>
             <div>

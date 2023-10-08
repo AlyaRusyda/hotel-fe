@@ -36,6 +36,7 @@ const Navbar = () => {
         email: localStorage.getItem("email"),
         role: localStorage.getItem("role"),
         nama_user: localStorage.getItem("nama_user"),
+        foto: localStorage.getItem("foto"),
       };
 
       setUser(userData); // Set the user state with userData
@@ -45,6 +46,18 @@ const Navbar = () => {
       window.scrollY > 0 ? setSticky(true) : setSticky(false);
     });
   }, []);
+
+  const handleLogout = () => {
+    if (window.confirm("Are you sure you want to logout?")) {
+      router.push("/");
+      localStorage.clear();
+      localStorage.removeItem("id");
+      localStorage.removeItem("token");
+      localStorage.removeItem("role");
+      localStorage.removeItem("email");
+      localStorage.removeItem("username");
+    }
+  };
 
   return (
     <nav
@@ -66,7 +79,7 @@ const Navbar = () => {
           </Link>
         </div>
         <div className="container flex justify-between h-16 mx-auto md:justify-end md:space-x-8">
-          <ul className="items-stretch hidden space-x-3 md:flex">
+          <ul className="items-stretch hidden space-x-3 md:flex -mr-16">
             {menuLinks?.map((menu, index) => (
               <li className="flex z-10" key={index}>
                 <Link
@@ -79,17 +92,19 @@ const Navbar = () => {
               </li>
             ))}
             <li className="py-2 z-0">
-              <button onClick={handleOpenModal}>
+              <button onClick={() => setModal(!modal)}>
                 {user && ( // Check if user is defined before using it
                   <div className="text-right ml-3 flex">
                     <span className="flex flex-col">
-                      <h2 className="text-md font-semibold capitalize">{user.nama_user}</h2>
+                      <h2 className="text-md font-semibold capitalize">
+                        {user.nama_user}
+                      </h2>
                       <p className="text-gray-500">{user.role}</p>
                     </span>
                     <img
-                      src="/img/user.png"
+                      src={`http://localhost:3000/foto/${user.foto}`}
                       alt=""
-                      className="bg-gray-200 border-double border-4 border-primary/50 rounded-full ml-2 w-12"
+                      className="h-12 w-12 bg-gray-200 border-double border-4 border-primary/50 rounded-full ml-2"
                     />
                   </div>
                 )}
@@ -97,6 +112,35 @@ const Navbar = () => {
             </li>
           </ul>
         </div>
+        {modal ? (
+          <div
+            class="z-50 my-4 text-base list-none absolute right-8 top-14 bg-white divide-y divide-gray-100 rounded shadow"
+            id="dropdown"
+          >
+            <div class="px-4 pt-3 pb-1 gap-2" role="none">
+              <p class="text-sm text-gray-900" role="none">
+                {user.email}
+              </p>
+              <p class="text-sm text-gray-900" role="none">
+                {user.nama_user}
+              </p>
+              <p class="text-sm text-gray-900" role="none">
+                {user.role}
+              </p>
+            </div>
+            <ul class="py-1" role="none">
+              <li>
+                <a
+                  onClick={handleLogout}
+                  class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 cursor-pointer dark:hover:text-white"
+                  role="menuitem"
+                >
+                  Sign out
+                </a>
+              </li>
+            </ul>
+          </div>
+        ) : null}
         <div className={` ${sticky ? "hidden" : "block"} `}>
           <div
             onClick={() => setOpen(!open)}
@@ -158,26 +202,6 @@ const Navbar = () => {
           </ul>
         </div>
       </div>
-      <Modal isVisible={modal} close={handleCloseModal}>
-        <div className="px-6 py-6 lg:px-8">
-          <button
-            onClick={() => {
-              if (window.confirm("Are you sure you want to logout?")) {
-                router.push("/");
-                localStorage.clear();
-                localStorage.removeItem("id");
-                localStorage.removeItem("token");
-                localStorage.removeItem("role");
-                localStorage.removeItem("email");
-                localStorage.removeItem("username");
-              }
-            }}
-            className="w-full text-white bg-red-600 hover:bg-red-700 focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2 mt-4"
-          >
-            Logout
-          </button>
-        </div>
-      </Modal>
     </nav>
   );
 };

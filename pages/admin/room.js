@@ -20,6 +20,7 @@ export default function Room() {
   const [action, setAction] = useState("");
   const [keyword, setKeyword] = useState("");
   const [modal, setModal] = useState(false);
+  const [selectedRoom, setSelectedRoom] = useState(null);
 
   const checkRole = () => {
     const storedToken = localStorage.getItem("token");
@@ -48,35 +49,44 @@ export default function Room() {
     return {};
   };
 
+  useEffect(() => {
+    if (selectedRoom) {
+      // Mengatur nilai tipeKamarId saat selectedRoom berubah
+      setTipeKamarId(selectedRoom.tipeKamarID);
+    }
+  }, [selectedRoom]);
+  
   const handleEdit = async (item) => {
     setModal(true);
+    setSelectedRoom(item); // Simpan data kamar yang dipilih ke dalam state selectedRoom
+    console.log(selectedRoom)
     try {
-      setId(item.id)
-      setNomorKamar(item.nomor_kamar)
-
+      setId(item.id);
+      setNomorKamar(item.nomor_kamar);
+  
       const response = await axios.get(`http://localhost:3000/tipekamar/getAll/`, headerConfig());
       const data = response.data.data;
-
+  
       const selectedTipeKamar = data.find((tipe) => tipe.id === item.tipeKamarID);
       if (selectedTipeKamar) {
         setTipeKamarId(selectedTipeKamar.id);
       }
-
     } catch (error) {
       console.error("Error fetching room data:", error);
     }
-  };
+  };  
 
   const handleSave = async (e) => {
     e.preventDefault();
 
-    const formData = new FormData();
-    formData.append("nomor_kamar", nomor_kamar);
-    formData.append("tipeKamarId", tipeKamarId);
+    let form = {
+      nomor_kamar,
+      tipeKamarId
+    }
 
     let url = `http://localhost:3000/kamar/update/${id}`;
     axios
-      .put(url, formData, headerConfig())
+      .put(url, form, headerConfig())
       .then((response) => {
         if (response.status === 200) {
           alert("Success edit data");
@@ -99,7 +109,7 @@ export default function Room() {
         .delete(url, headerConfig())
         .then((response) => {
           console.log(response.data.message);
-          getTypeRoom();
+          getRoom();
         })
         .catch((error) => {
           if (error.response.status === 500) {
@@ -132,12 +142,6 @@ export default function Room() {
     }
   };
 
-  // const handleSarch = () => {
-  //   const filteredRooms = originalRoom.filter((room) => {
-  //     return room.tipe_kamar?.id === parseInt(keyword);
-  //   });
-  //   setRoom(filteredRooms);
-  // };
   const handleSearch = (e) => {
     const value = e.target.value.toLowerCase();
     setKeyword(value);

@@ -4,13 +4,13 @@ import Footer from "@/components/Footers/footer";
 import moment from "moment/moment";
 import Modal from "@/components/Modal/modal";
 import Navbar from "@/components/Navbars/customer/navbar";
-import jsPDF from 'jspdf';
-import html2canvas from 'html2canvas';
 
 export default function History() {
   const [history, setHistory] = useState([]);
   const [originalHistory, setOriginalHistory] = useState([]);
   const [isClient, setIsClient] = useState("");
+  const [keyword, setKeyword] = useState("");
+  const [tgl, setTgl] = useState("");
   const [selectedReservation, setSelectedReservation] = useState(null);
   const [modal, setModal] = useState(false);
 
@@ -36,12 +36,27 @@ export default function History() {
       });
   };
   
-  // generateInvoice = (props) => {
+  const handleSearch = (e) => {
+    const value = e.target.value.toLowerCase();
+    setKeyword(value);
+    const filteredHistory = originalHistory.filter((type) => {
+      return type.status_pemesanan.toLowerCase().includes(value);
+    });
+    setHistory(filteredHistory);
+  };
 
-  // }
+  const handleSearchTgl = (e) => {
+    const value = e.target.value.toLowerCase();
+    setTgl(value);
+    const filteredHistory = originalHistory.filter((type) => {
+      const formattedCheckInDate = type.tgl_check_in.split('T')[0]; 
+      return formattedCheckInDate.includes(value);
+    });
+    setHistory(filteredHistory);
+  };
 
   useEffect(() => {
-    setIsClient(true);
+    setIsClient(true);1
     getHistory();
   }, []);
 
@@ -50,6 +65,31 @@ export default function History() {
       <Navbar />
       <div className="px-20 font-bold mt-28 text-primary flex flex-row">
         <h1 className="text-2xl md:text-3xl w-60">History List</h1>
+        <div className="flex items-center ml-auto">
+          <div className="flex rounded gap-2">
+            <input
+              type="date"
+              className="block px-4 py-2 bg-white border font-normal rounded-md focus:border-priamry/10 focus:ring-primary/20 focus:outline-none focus:ring focus:ring-opacity-40"
+              placeholder="Tanggal..."
+              name="tgl"
+              value={tgl}
+              onKeyUp={handleSearchTgl}
+              onChange={(e) => setTgl(e.target.value)}
+            />
+            <select
+              className="block px-4 py-2 bg-slate-200 border font-normal rounded-md focus:border-primary/10 focus:ring-primary/20 focus:outline-none focus:ring focus:ring-opacity-40"
+              placeholder="Status"
+              name="keyword"
+              value={keyword}
+              onChange={handleSearch}
+            >
+              <option value="">Select Status</option>
+              <option value="baru">Baru</option>
+              <option value="check_in">Check In</option>
+              <option value="check_out">Check Out</option>
+            </select>
+          </div>
+        </div>
       </div>
       <div className="overflow-x-auto mt-8 px-20 mb-52">
         <table className="w-full divide-y-2 divide-primary/20 bg-sec/20 text-sm">

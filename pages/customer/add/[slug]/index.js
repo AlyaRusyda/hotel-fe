@@ -12,7 +12,7 @@ export default function Login() {
   const [tgl_check_out, setCheckOut] = useState("");
   const [nama_tamu, setNamaTamu] = useState("");
   const [jumlah_kamar, setJumlahKamar] = useState(1);
-  const [foto, setFoto] = useState(null);
+  const [error, setError] = useState(null);
   const router = useRouter();
 
   useEffect(() => {
@@ -39,7 +39,6 @@ export default function Login() {
 
   const handleAdd = async (e) => {
     e.preventDefault();
-
     let form = {
       nama_pemesan,
       nama_user,
@@ -50,31 +49,17 @@ export default function Login() {
       jumlah_kamar,
       tipe_kamar
     }
-
-    console.log(form, "hhh");
-
     let url = "http://localhost:3000/pesan/";
-    // axios
-    //   .post(url, form, headerConfig())
-    //   .then((response) => {
-    //     // if (response.status === 200) {
-    //       // window.alert("Success add data");
-    //       // window.location.href = "/customer/history";
-    //     // }
-    //     console.log("berhasil");
-    //   })
-    //   .catch((error) => {
-    //     console.log("error add data", error.response.status);
-    //     if (error.response.status === 500) {
-    //       alert("Failed to add data");
-    //     }
-    //   });
     try {
       await axios.post(url, form, headerConfig());
-      window.alert("Success transaction")
-      router.push('/customer/history')
+      window.alert("Success transaction");
+      router.push('/customer/history');
     } catch (error) {
-      console.log(error);
+      if (error.response && error.response.status === 400) {
+        setError(error.response.data.message); // Set error message from the response
+      } else {
+        setError("An error occurred while processing your request."); // Generic error message
+      }
     }
   };
 
@@ -131,12 +116,17 @@ export default function Login() {
               />
             </div>
           </div>
-          <button
-            type="submit"
-            className="w-full px-8 py-3 font-semibold rounded-md bg-primary text-gray-50"
-          >
-            Add
-          </button>
+          {error && (
+          <div className="text-red-500 text-sm">
+            Error: {error} {/* Display the error message */}
+          </div>
+        )}
+        <button
+          type="submit"
+          className="w-full px-8 py-3 font-semibold rounded-md bg-primary text-gray-50"
+        >
+          Add
+        </button>
         </form>
       </div>
     </>
