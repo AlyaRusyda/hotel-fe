@@ -29,13 +29,11 @@ export default function Login() {
         } else if (response.data.message == `Validation error`) {
           setError("Email already exist. Please change your email");
         } else if (response.status === 200) {
-          console.log(response.data);
           alert("Success add data");
           window.location.href = "/admin/user";
         }
       })
       .catch((error) => {
-        console.log("error add data", error.response.status);
         if (error.response.status === 500) {
           alert("Failed to add data");
         }

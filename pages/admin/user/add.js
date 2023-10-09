@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 export default function Login() {
   const [id, setId] = useState("");
@@ -9,6 +9,17 @@ export default function Login() {
   const [role, setRole] = useState("customer");
   const [foto, setFoto] = useState(null);
   const [error, setError] = useState(null);
+  const [token, setToken] = useState("")
+
+  useEffect(() => {
+    const storedToken = localStorage.getItem("token");
+    if (storedToken) {
+      setToken(storedToken);
+    } else {
+      alert("Anda harus login untuk mengakses halaman ini");
+      window.location.href = "/"; 
+    }
+  }, []);
 
   const handleAdd = (e) => {
     e.preventDefault();
@@ -30,13 +41,13 @@ export default function Login() {
           setError("Email already exist. Please change your email")
         } 
         else if (response.status === 200) {
-          console.log(response.data);
+          // console.log(response.data);
           alert("Success add data");
           window.location.href = "/admin/user";
         }
       })
       .catch((error) => {
-        console.log("error add data", error.response);
+        // console.log("error add data", error.response);
         if (error.response && error.response.data) {
           setError(error.response.data.message); // Mengatur pesan kesalahan dari respons server
         } else {
@@ -49,16 +60,10 @@ export default function Login() {
     setFoto(e.target.files[0]);
   };
 
-  const headerConfig = () => {
-    let token = localStorage.getItem("token");
-    let header = {
-      headers: { Authorization: `Bearer ${token}` },
-    };
-    return header;
-  };
-
   return (
     <>
+    {token ? (
+      <>
       <div
         className="absolute top-0 w-full h-full bg-center bg-cover -z-20"
         style={{
@@ -154,6 +159,8 @@ export default function Login() {
           </button>
         </form>
       </div>
+      </>
+      ) : null}
     </>
   );
 }

@@ -7,9 +7,18 @@ export default function TypeRoom() {
   const [typeroom, setTyperoom] = useState([]);
   const [originalTyperoom, setOriginalTyperoom] = useState([]);
   const [role, setRole] = useState("");
-  const [token, setToken] = useState("");
   const [keyword, setKeyword] = useState("");
-  const [modal, setModal] = useState(false);
+  const [token, setToken] = useState("")
+
+  useEffect(() => {
+    const storedToken = localStorage.getItem("token");
+    if (storedToken) {
+      setToken(storedToken);
+    } else {
+      alert("Anda harus login untuk mengakses halaman ini");
+      window.location.href = "/"; 
+    }
+  }, []);
 
   const checkRole = () => {
     if (localStorage.getItem("token")) {
@@ -77,6 +86,8 @@ export default function TypeRoom() {
   
   return (
     <>
+    {token ? (
+      <>
       <Navbar />
       <div className="px-20 font-bold mt-28 text-primary flex flex-row">
         <h1 className="text-2xl md:text-3xl w-60">Typeroom List</h1>
@@ -118,12 +129,17 @@ export default function TypeRoom() {
                 </h3>
 
                 <p className="mt-1.5 text-sm text-gray-700">{item.deskripsi}</p>
+                <a href={`/customer/typeroom/${item.nama_tipe_kamar}`} className="mt-4 block w-full rounded bg-primary/20 p-4 text-sm font-medium transition hover:scale-105 text-center">
+                  Book Now
+                </a>
               </div>
             </div>
           ))
         )}
       </div>
       <Footer />
+      </>
+      ) : null}
     </>
   );
 }

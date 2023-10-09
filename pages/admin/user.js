@@ -13,14 +13,22 @@ export default function User() {
   const [nama_user, setNamaUser] = useState("");
   const [foto, setFoto] = useState("");
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const [role, setRole] = useState("");
   const [role_user, setRoleUser] = useState("");
-  const [token, setToken] = useState("");
-  const [action, setAction] = useState("");
   const [keyword, setKeyword] = useState("");
   const [roles, setRoles] = useState("");
   const [modal, setModal] = useState(false);
+  const [token, setToken] = useState("")
+
+  useEffect(() => {
+    const storedToken = localStorage.getItem("token");
+    if (storedToken) {
+      setToken(storedToken);
+    } else {
+      alert("Anda harus login untuk mengakses halaman ini");
+      window.location.href = "/"; 
+    }
+  }, []);
 
   const checkRole = () => {
     if (localStorage.getItem("token")) {
@@ -50,9 +58,7 @@ export default function User() {
   }, [])
 
   const handleEdit = async (item) => {
-    setModal(true);
-    console.log(item)
-    
+    setModal(true);    
     setId(item.id)
     setNamaUser(item.nama_user);
     setEmail(item.email);
@@ -78,7 +84,6 @@ export default function User() {
         }
       })
       .catch((error) => {
-        console.log("error add data", error);
         if (error.status === 500) {
           alert("Failed to add data");
         }
@@ -91,7 +96,6 @@ export default function User() {
       axios
         .delete(url, headerConfig())
         .then((response) => {
-          console.log(response.data.message);
           getAllUser();
         })
         .catch((error) => {
@@ -159,6 +163,8 @@ export default function User() {
 
   return (
     <>
+    {token ? (
+      <>
       <Navbar />
       <div className="px-20 font-bold mt-28 text-primary flex flex-row">
         <h1 className="text-2xl md:text-3xl w-60">User List</h1>
@@ -370,6 +376,8 @@ export default function User() {
           </form>
         </div>
       </Modal>
+      </>
+      ) : null}
     </>
   );
 }

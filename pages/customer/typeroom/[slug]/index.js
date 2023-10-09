@@ -3,7 +3,6 @@ import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 
 export default function Login() {
-  const [id, setId] = useState("");
   const [tipe_kamar, setTipeKamar] = useState("");
   const [nama_pemesan, setNamaPemesan] = useState("");
   const [email_pemesan, setEmailPemesan] = useState("");
@@ -28,21 +27,16 @@ export default function Login() {
 
   useEffect(() => {
     if (typeof window !== "undefined") {
-      // Check if localStorage is available in the browser environment
       const localStorageNamaPemesan = window.localStorage.getItem("nama_user");
       const localStorageNamaUser = window.localStorage.getItem("nama_user");
       const localStorageEmail = window.localStorage.getItem("email");
-      const localStorageCheckIn = window.localStorage.getItem("tgl_check_in");
-      const localStorageCheckOut = window.localStorage.getItem("tgl_check_out");
 
       setNamaPemesan(localStorageNamaPemesan);
       setNamaUser(localStorageNamaUser);
       setEmailPemesan(localStorageEmail);
-      setCheckIn(localStorageCheckIn);
-      setCheckOut(localStorageCheckOut);
 
       const pathname = window.location.pathname;
-      const tipe = pathname.split("/customer/add/");
+      const tipe = pathname.split("/customer/typeroom/");
       setTipeKamar(tipe[1]);
     }
   }, []);
@@ -106,6 +100,26 @@ export default function Login() {
             </div>
             <form className="space-y-12" onSubmit={handleAdd}>
               <div className="space-y-4">
+                <div>
+                  <label className="block mb-2 text-sm">Check In</label>
+                  <input
+                    type="date"
+                    value={tgl_check_in}
+                    onChange={(e) => setCheckIn(e.target.value)}
+                    className="w-full px-3 py-2 placeholder-gray-400 border border-gray-300 rounded-md"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="block mb-2 text-sm">Check Out</label>
+                  <input
+                    type="date"
+                    value={tgl_check_out}
+                    onChange={(e) => setCheckOut(e.target.value)}
+                    className="w-full px-3 py-2 placeholder-gray-400 border border-gray-300 rounded-md"
+                    required
+                  />
+                </div>
                 <div>
                   <label className="block mb-2 text-sm">Nama Tamu</label>
                   <input

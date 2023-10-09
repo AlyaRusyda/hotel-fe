@@ -7,6 +7,17 @@ export default function Login() {
   const [nomor_kamar, setNomorKamar] = useState("");
   const [namaTipeKamar, setnamaTipeKamar] = useState("");
   const [error, setError] = useState(null);
+  const [token, setToken] = useState("")
+
+  useEffect(() => {
+    const storedToken = localStorage.getItem("token");
+    if (storedToken) {
+      setToken(storedToken);
+    } else {
+      alert("Anda harus login untuk mengakses halaman ini");
+      window.location.href = "/"; 
+    }
+  }, []);
 
   const handleAdd = (e) => {
     e.preventDefault();
@@ -35,7 +46,7 @@ export default function Login() {
         }
       })
       .catch((error) => {
-        console.log("Error response:", error.response);
+        // console.log("Error response:", error.response);
         if (error.response.status === 500) {
           setError(error.response);
         }
@@ -68,6 +79,8 @@ export default function Login() {
 
   return (
     <>
+    {token ? (
+      <>
       <div
         className="absolute top-0 w-full h-full bg-center bg-cover -z-20"
         style={{
@@ -135,6 +148,8 @@ export default function Login() {
           </button>
         </form>
       </div>
+      </>
+      ) : null}
     </>
   );
 }

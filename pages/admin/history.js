@@ -2,24 +2,30 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Navbar from "@/components/Navbars/admin/navbar";
 import Footer from "@/components/Footers/footer";
-import Link from "next/link";
 import moment from "moment/moment";
 import Modal from "@/components/Modal/modal";
-// import Modal from "@/components/Modal/modal";
 
 export default function History() {
   const [history, setHistory] = useState([]);
   const [originalHistory, setOriginalHistory] = useState([]);
-  const [typeroom, setTyperoom] = useState([]);
   const [isClient, setIsClient] = useState("");
-  const [id, setId] = useState("");
-  const [token, setToken] = useState("");
   const [selectedReservation, setSelectedReservation] = useState(null);
   const [role, setRole] = useState("");
   const [keyword, setKeyword] = useState("");
   const [input, setInput] = useState("");
   const [tgl, setTgl] = useState("");
   const [modal, setModal] = useState(false);
+  const [token, setToken] = useState("")
+
+  useEffect(() => {
+    const storedToken = localStorage.getItem("token");
+    if (storedToken) {
+      setToken(storedToken);
+    } else {
+      alert("Anda harus login untuk mengakses halaman ini");
+      window.location.href = "/"; 
+    }
+  }, []);
 
   const checkRole = () => {
     if (localStorage.getItem("token")) {
@@ -48,44 +54,6 @@ export default function History() {
     setIsClient(true);
   }, []);
 
-  const handleEdit = async (id) => {
-    setModal(true);
-    setId(id);
-    let url = await axios.get(
-      `http://localhost:3000/pesan/${id}`,
-      headerConfig
-    );
-    const data = response.data;
-    setNamaTipeKamar(response.data.data.nama_tipe_kamar);
-    setHarga(respose.data.data.harga);
-    setDeskripsi(response.ata.data.deskripsi);
-    setFoto(respose.data.data.foto);
-  };
-
-  const handleSave = (e) => {
-    e.preventDefault();
-    let form = new FormData();
-    form.append("id", id);
-    form.append("nama_tipe_kamar", nama_tipe_kamar);
-    form.append("harga", harga);
-    form.append("deskripsi", deskripsi);
-    form.append("foto", foto);
-
-    let url = `http://localhost:3000/pesan/${id}`;
-    axios
-      .put(url, form, headerConfig())
-      .then((response) => {
-        if (response.status === 200) {
-          alert("Success edit data");
-        }
-      })
-      .catch((error) => {
-        console.log("error add data", error.response.status);
-        if (error.response.status === 500) {
-          alert("Failed to add data");
-        }
-      });
-  };
 
   const handleEditStatus = (reservation) => {
     setModal(true);
@@ -111,7 +79,6 @@ export default function History() {
           alert("Success edit status");
           setModal(false); // Close the modal after successful update
 
-          // Update the 'status_pemesanan' value in the 'history' state
           setHistory((prevHistory) =>
             prevHistory.map((item) =>
               item.id === reservationId
@@ -136,18 +103,6 @@ export default function History() {
       .then((response) => {
         setHistory(response.data.data);
         setOriginalHistory(response.data.data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
-
-  const getTypeRoom = () => {
-    let url = "http://localhost:3000/tipekamar/getAll/";
-    axios
-      .get(url, headerConfig())
-      .then((response) => {
-        setTyperoom(response.data.data);
       })
       .catch((error) => {
         console.log(error);
@@ -201,6 +156,8 @@ export default function History() {
 
   return (
     <>
+    {token ? (
+      <>
       <Navbar />
       <div className="px-20 font-bold mt-28 text-primary flex flex-row">
         <h1 className="text-2xl md:text-3xl w-60">History List</h1>
@@ -411,6 +368,8 @@ export default function History() {
           )}
         </div>
       </Modal>
+      </>
+      ) : null}
     </>
   );
 }

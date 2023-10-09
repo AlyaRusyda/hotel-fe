@@ -11,8 +11,20 @@ export default function History() {
   const [isClient, setIsClient] = useState("");
   const [keyword, setKeyword] = useState("");
   const [tgl, setTgl] = useState("");
+  const [nomor, setNomor] = useState("");
   const [selectedReservation, setSelectedReservation] = useState(null);
   const [modal, setModal] = useState(false);
+  const [token, setToken] = useState("");
+
+  useEffect(() => {
+    const storedToken = localStorage.getItem("token");
+    if (storedToken) {
+      setToken(storedToken);
+    } else {
+      alert("Anda harus login untuk mengakses halaman ini");
+      window.location.href = "/";
+    }
+  }, []);
 
   const headerConfig = () => {
     let token = localStorage.getItem("token");
@@ -35,7 +47,16 @@ export default function History() {
         console.log(error);
       });
   };
-  
+
+  const handleNomor = (e) => {
+    const value = e.target.value.toLowerCase();
+    setNomor(value);
+    const filteredHistory = originalHistory.filter((type) => {
+      return type.nomor_pemesanan.toLowerCase().includes(value);
+    });
+    setHistory(filteredHistory);
+  };
+
   const handleSearch = (e) => {
     const value = e.target.value.toLowerCase();
     setKeyword(value);
@@ -49,24 +70,36 @@ export default function History() {
     const value = e.target.value.toLowerCase();
     setTgl(value);
     const filteredHistory = originalHistory.filter((type) => {
-      const formattedCheckInDate = type.tgl_check_in.split('T')[0]; 
+      const formattedCheckInDate = type.tgl_check_in.split("T")[0];
       return formattedCheckInDate.includes(value);
     });
     setHistory(filteredHistory);
   };
 
   useEffect(() => {
-    setIsClient(true);1
+    setIsClient(true);
+    1;
     getHistory();
   }, []);
 
   return (
     <>
+    {token ? (
+      <>
       <Navbar />
       <div className="px-20 font-bold mt-28 text-primary flex flex-row">
         <h1 className="text-2xl md:text-3xl w-60">History List</h1>
         <div className="flex items-center ml-auto">
           <div className="flex rounded gap-2">
+            <input
+              type="text"
+              className="block px-4 py-2 bg-white border font-normal rounded-md focus:border-priamry/10 focus:ring-primary/20 focus:outline-none focus:ring focus:ring-opacity-40"
+              placeholder="Nomor Pemesanan..."
+              name="nomor"
+              value={nomor}
+              onKeyUp={handleNomor}
+              onChange={(e) => setNomor(e.target.value)}
+            />
             <input
               type="date"
               className="block px-4 py-2 bg-white border font-normal rounded-md focus:border-priamry/10 focus:ring-primary/20 focus:outline-none focus:ring focus:ring-opacity-40"
@@ -250,6 +283,8 @@ export default function History() {
           )}
         </div>
       </Modal>
+      </>
+      ) : null}
     </>
   );
 }

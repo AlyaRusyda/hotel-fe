@@ -1,34 +1,24 @@
 import axios from "axios";
-import React, { useState } from "react";
-import Link from "next/link";
+import React, { useState, useEffect } from "react";
 import Footer from "@/components/Footers/footerHome";
 import Navbar from "@/components/Navbars/customer/navbarHome";
 
 export default function Login() {
   const [avail, setAvail] = useState([]);
-  const [nama_tipe_kamar, setNamaTipeKamar] = useState("");
-  const [nomor_kamar, setNomorKamar] = useState("");
   const [tgl_check_in, setCheckIn] = useState("");
   const [tgl_check_out, setCheckOut] = useState("");
-  const[jumlah_kamar, setJumlahKamar] = useState("");
   const [typeroom, setTyperoom] = useState("")
-  const [role, setRole] = useState("");
   const [token, setToken] = useState("");
 
-  const checkRole = () => {
-    if (localStorage.getItem("token")) {
-      if (
-        localStorage.getItem("role") === "admin" ||
-        localStorage.getItem("role") === "resepsionis"
-      ) {
-        setToken(localStorage.getItem("token"));
-        setRole(localStorage.getItem("role"));
-      } else {
-        window.alert("You're not admin or resepsionis!");
-        window.location = "/";
-      }
+  useEffect(() => {
+    const storedToken = localStorage.getItem("token");
+    if (storedToken) {
+      setToken(storedToken);
+    } else {
+      alert("Anda harus login untuk mengakses halaman ini");
+      window.location.href = "/"; 
     }
-  };
+  }, []);
 
   const headerConfig = () => {
     let token = localStorage.getItem("token");
@@ -52,18 +42,28 @@ export default function Login() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    let form = new FormData();
-    form.append("tgl_check_in", tgl_check_in);
-    form.append("tgl_check_out", tgl_check_out);
-  
-    // Simpan tgl_check_in dan tgl_check_out ke dalam localStorage
-    localStorage.setItem("tgl_check_in", tgl_check_in);
-    localStorage.setItem("tgl_check_out", tgl_check_out);
+    let data = {
+      tgl_check_in: tgl_check_in,
+      tgl_check_out: tgl_check_out,
+    };
+    let url = "http://localhost:3000/kamar/getAvailable";
+    axios
+      .post(url, data, headerConfig())
+      .then((response) => {
+        localStorage.setItem("tgl_check_in", tgl_check_in); // Menyimpan tgl_check_in ke localStorage
+        localStorage.setItem("tgl_check_out", tgl_check_out); // Menyimpan tgl_check_out ke localStorage
+        setAvail(response.data.data);
+      })
+      .catch((error) => {
+        alert("Can't get available type at the moment.");
+      });
   };
   
 
   return (
     <>
+    {token ? (
+      <>
       <Navbar transparent />
       <main className="bg-sec">
         <div className="relative pt-44 pb-60 flex content-center items-center justify-center min-h-screen-75">
@@ -139,19 +139,18 @@ export default function Login() {
                 />
                 </div>
                 
-                <button className="bg-primary text-sec shadow-md shadow-sec/20 p-2 rounded-md w-24 mt-8" onClick={getTypeRoom}>
+                <button className="bg-primary text-sec shadow-md shadow-sec/20 p-2 rounded-md w-24 mt-8">
                   Search
                 </button>
               </form>
             </div> 
 
-            <div className="py-8 grid grid-cols-2 lg:grid-cols-4 gap-6 px-20 mt-8">
-        {typeroom.length === 0 ? (
-          <div className="m-6"></div>
+            <div className="py-8 grid grid-cols-2 lg:grid-cols-4 gap-6 px-20 mt-2">
+        {avail.length === 0 ? (
+          <div className="m-4"></div>
         ) : (
-          typeroom.map((item, index) => (
+          avail.map((item, index) => (
             <div className="group relative block overflow-hidden rounded-md">
-
               <img
                 src={"http://localhost:3000/foto/" + item.foto}
                 alt=""
@@ -179,6 +178,8 @@ export default function Login() {
       </div>
       </main>
       <Footer />
+      </>
+      ) : null}
     </>
   );
 }

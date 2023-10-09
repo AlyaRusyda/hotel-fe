@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 
 export default function Login() {
   const [id, setId] = useState("");
@@ -8,6 +8,17 @@ export default function Login() {
   const [deskripsi, setDeskripsi] = useState("");
   const [foto, setFoto] = useState(null);
   const [error, setError] = useState(null);
+  const [token, setToken] = useState("")
+
+  useEffect(() => {
+    const storedToken = localStorage.getItem("token");
+    if (storedToken) {
+      setToken(storedToken);
+    } else {
+      alert("Anda harus login untuk mengakses halaman ini");
+      window.location.href = "/"; 
+    }
+  }, []);
 
   const handleAdd = (e) => {
     e.preventDefault();
@@ -22,20 +33,20 @@ export default function Login() {
     axios
       .post(url, form, headerConfig())
       .then((response) => {
-        console.log("Response data:", response.data);
-        if (response.data.message == `File size is too large`) {
+        // console.log("Response data:", response.data);
+        if (response.data.message == `File size is too largee`) {
           setError("File size is too large. Please upload a smaller file.");
         } else if (response.data.message == `Tipe kamar yang anda inputkan sudah ada`) {
           setError("Typeroom already exist. Please change the typeroom")
         } 
         else if (response.status === 200) {
-          console.log(response.data);
+          // console.log(response.data);
           alert("Success add data");
-          window.location.href = "/admin/user";
+          window.location.href = "/admin/typeroom";
         }
       })
       .catch((error) => {
-        console.log("error add data", error.response);
+        // console.log("error add data", error.response);
         if (error.response.status === 400) {
           setError(error.response.data.message); // Set error message from the response
         } else {
@@ -58,6 +69,8 @@ export default function Login() {
 
   return (
     <>
+    {token ? (
+      <>
       <div
         className="absolute top-0 w-full h-full bg-center bg-cover -z-20"
         style={{
@@ -132,6 +145,8 @@ export default function Login() {
           </button>
         </form>
       </div>
+      </>
+      ) : null}
     </>
   );
 }

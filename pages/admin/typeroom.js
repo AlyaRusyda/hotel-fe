@@ -14,10 +14,19 @@ export default function TypeRoom() {
   const [deskripsi, setDeskripsi] = useState("");
   const [foto, setFoto] = useState("");
   const [role, setRole] = useState("");
-  const [token, setToken] = useState("");
-  const [action, setAction] = useState("");
   const [keyword, setKeyword] = useState("");
   const [modal, setModal] = useState(false);
+  const [token, setToken] = useState("");
+
+  useEffect(() => {
+    const storedToken = localStorage.getItem("token");
+    if (storedToken) {
+      setToken(storedToken);
+    } else {
+      alert("Anda harus login untuk mengakses halaman ini");
+      window.location.href = "/"; 
+    }
+  }, []);
 
   const checkRole = () => {
     if (localStorage.getItem("token")) {
@@ -44,7 +53,6 @@ export default function TypeRoom() {
 
   const handleEdit = async (item) => {
     setModal(true);
-    console.log('item', item)
     try {
       setId(item.id);
       setNamaTipeKamar(item.nama_tipe_kamar)
@@ -74,7 +82,6 @@ export default function TypeRoom() {
         }
       })
       .catch((error) => {
-        console.log("error add data", error.response.status);
         if (error.response.status === 500) {
           alert("Failed to add data");
         }
@@ -87,7 +94,6 @@ export default function TypeRoom() {
       axios
         .delete(url, headerConfig())
         .then((response) => {
-          console.log(response.data.message);
           getTypeRoom();
         })
         .catch((error) => {
@@ -147,6 +153,8 @@ export default function TypeRoom() {
   
   return (
     <>
+    {token ? (
+      <>
       <Navbar />
       <div className="px-20 font-bold mt-28 text-primary flex flex-row">
         <h1 className="text-2xl md:text-3xl w-60">Typeroom List</h1>
@@ -344,6 +352,8 @@ export default function TypeRoom() {
           </form>
         </div>
       </Modal>
+      </>
+      ) : null}
     </>
   );
 }

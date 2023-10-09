@@ -10,17 +10,25 @@ export default function Room() {
   const [room, setRoom] = useState([]);
   const [originalRoom, setOriginalRoom] = useState([]);
   const [typeroom, setTyperoom] = useState([]);
-  const [value, setValue] = useState("");
   const [id, setId] = useState("");
   const [isClient, setIsClient] = useState(false);
   const [nomor_kamar, setNomorKamar] = useState("");
   const [tipeKamarId, setTipeKamarId] = useState("");
   const [role, setRole] = useState("");
-  const [token, setToken] = useState("");
-  const [action, setAction] = useState("");
   const [keyword, setKeyword] = useState("");
   const [modal, setModal] = useState(false);
   const [selectedRoom, setSelectedRoom] = useState(null);
+  const [token, setToken] = useState("");
+
+  useEffect(() => {
+    const storedToken = localStorage.getItem("token");
+    if (storedToken) {
+      setToken(storedToken);
+    } else {
+      alert("Anda harus login untuk mengakses halaman ini");
+      window.location.href = "/"; 
+    }
+  }, []);
 
   const checkRole = () => {
     const storedToken = localStorage.getItem("token");
@@ -59,7 +67,6 @@ export default function Room() {
   const handleEdit = async (item) => {
     setModal(true);
     setSelectedRoom(item); // Simpan data kamar yang dipilih ke dalam state selectedRoom
-    console.log(selectedRoom)
     try {
       setId(item.id);
       setNomorKamar(item.nomor_kamar);
@@ -78,7 +85,6 @@ export default function Room() {
 
   const handleSave = async (e) => {
     e.preventDefault();
-
     let form = {
       nomor_kamar,
       tipeKamarId
@@ -108,7 +114,6 @@ export default function Room() {
       axios
         .delete(url, headerConfig())
         .then((response) => {
-          console.log(response.data.message);
           getRoom();
         })
         .catch((error) => {
@@ -160,6 +165,8 @@ export default function Room() {
 
   return (
     <>
+    {token ? (
+      <>
       <Navbar />
       <div className="px-20 font-bold mt-28 text-primary flex flex-row">
         <h1 className="text-2xl md:text-3xl w-60">Room List</h1>
@@ -325,6 +332,8 @@ export default function Room() {
           </form>
         </div>
       </Modal>
+      </>
+      ) : null}
     </>
   );
 }

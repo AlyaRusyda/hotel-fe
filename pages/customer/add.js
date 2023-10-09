@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 
 export default function Login() {
   const [id, setId] = useState("");
@@ -8,6 +8,17 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const [role, setRole] = useState("");
   const [foto, setFoto] = useState(null);
+  const [token, setToken] = useState("");
+
+  useEffect(() => {
+    const storedToken = localStorage.getItem("token");
+    if (storedToken) {
+      setToken(storedToken);
+    } else {
+      alert("Anda harus login untuk mengakses halaman ini");
+      window.location.href = "/";
+    }
+  }, []);
 
   const handleAdd = (e) => {
     e.preventDefault();
@@ -29,7 +40,6 @@ export default function Login() {
         }
       })
       .catch((error) => {
-        console.log("error add data", error.response.status);
         if (error.response.status === 500) {
           alert("Failed to add data");
         }
@@ -50,6 +60,8 @@ export default function Login() {
 
   return (
     <>
+    {token ? (
+      <>
       <div
         className="absolute top-0 w-full h-full bg-center bg-cover -z-20"
         style={{
@@ -136,6 +148,8 @@ export default function Login() {
           </button>
         </form>
       </div>
+      </>
+      ) : null}
     </>
   );
 }
