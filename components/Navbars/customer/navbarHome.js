@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import Hamburger from "@/components/Hamburgers/Hamburger";
-import Modal from "@/components/Modal/modal";
 
 const Navbar = () => {
   const [sticky, setSticky] = useState(false);

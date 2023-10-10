@@ -7,7 +7,6 @@ export default function Login() {
   const [avail, setAvail] = useState([]);
   const [tgl_check_in, setCheckIn] = useState("");
   const [tgl_check_out, setCheckOut] = useState("");
-  const [typeroom, setTyperoom] = useState("")
   const [token, setToken] = useState("");
   const [role, setRole] = useState("")
 

@@ -19,7 +19,6 @@ export default function History() {
     },
     nomor_kamar: [],
   });
-  console.log(history);
   const [isClient, setIsClient] = useState("");
   const componentRef = useRef(null);
   const [token, setToken] = useState("");
