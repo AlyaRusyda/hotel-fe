@@ -15,6 +15,7 @@ export default function History() {
   const [selectedReservation, setSelectedReservation] = useState(null);
   const [modal, setModal] = useState(false);
   const [token, setToken] = useState("");
+  const [role, setRole] = useState("")
 
   useEffect(() => {
     const storedToken = localStorage.getItem("token");
@@ -25,6 +26,20 @@ export default function History() {
       window.location.href = "/";
     }
   }, []);
+
+  const checkRole = () => {
+    if (localStorage.getItem("token")) {
+      if (
+        localStorage.getItem("role") === "customer"
+      ) {
+        setToken(localStorage.getItem("token"));
+        setRole(localStorage.getItem("role"));
+      } else {
+        window.alert("You're not customer!");
+        window.location = "/";
+      }
+    }
+  };
 
   const headerConfig = () => {
     let token = localStorage.getItem("token");
@@ -80,6 +95,21 @@ export default function History() {
     setIsClient(true);
     1;
     getHistory();
+  }, []);
+
+  useEffect(() => {
+    if (localStorage.getItem("token")) {
+      if (
+        localStorage.getItem("role") === "customer"
+      ) {
+        setToken(localStorage.getItem("token"));
+        setRole(localStorage.getItem("role"));
+      } else {
+        // window.alert("You're not admin or resepsionis!");
+        window.location = "/";
+      }
+    }
+    checkRole();
   }, []);
 
   return (

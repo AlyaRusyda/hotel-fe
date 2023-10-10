@@ -28,7 +28,7 @@ export default function TypeRoom() {
         setToken(localStorage.getItem("token"));
         setRole(localStorage.getItem("role"));
       } else {
-        window.alert("You're not admin or resepsionis!");
+        window.alert("You're not customer!");
         window.location = "/";
       }
     }
@@ -74,12 +74,8 @@ export default function TypeRoom() {
       ) {
         setToken(localStorage.getItem("token"));
         setRole(localStorage.getItem("role"));
-      } else {
-        window.alert("You're not admin or resepsionis!");
-        window.location = "/";
       }
     }
-
     getTypeRoom();
     checkRole();
   }, []);

@@ -7,7 +7,8 @@ export default function Login() {
   const [nomor_kamar, setNomorKamar] = useState("");
   const [namaTipeKamar, setnamaTipeKamar] = useState("");
   const [error, setError] = useState(null);
-  const [token, setToken] = useState("")
+  const [token, setToken] = useState("");
+  const [role, setRole] = useState("");
 
   useEffect(() => {
     const storedToken = localStorage.getItem("token");
@@ -18,6 +19,21 @@ export default function Login() {
       window.location.href = "/"; 
     }
   }, []);
+
+  const checkRole = () => {
+    if (localStorage.getItem("token")) {
+      if (
+        localStorage.getItem("role") === "admin" ||
+        localStorage.getItem("role") === "resepsionis"
+      ) {
+        setToken(localStorage.getItem("token"));
+        setRole(localStorage.getItem("role"));
+      } else {
+        window.alert("You're not admin or resepsionis!");
+        window.location = "/";
+      }
+    }
+  };
 
   const handleAdd = (e) => {
     e.preventDefault();
@@ -37,7 +53,6 @@ export default function Login() {
         },
       })
       .then((response) => {
-        console.log("Response data:", response);
         if (response.data.success === false) {
           setError(response.data.message);
         } else {
@@ -46,7 +61,6 @@ export default function Login() {
         }
       })
       .catch((error) => {
-        // console.log("Error response:", error.response);
         if (error.response.status === 500) {
           setError(error.response);
         }
@@ -75,6 +89,7 @@ export default function Login() {
 
   useEffect(() => {
     getTypeRoom();
+    checkRole()
   });
 
   return (

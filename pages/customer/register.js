@@ -1,5 +1,7 @@
 import axios from "axios";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useRouter } from "next/router";
+import { isAuthenticated } from "../auth";
 
 export default function Login() {
   const [id, setId] = useState("");
@@ -9,6 +11,20 @@ export default function Login() {
   const [role, setRole] = useState("customer");
   const [foto, setFoto] = useState(null);
   const [error, setError] = useState(null);
+  const router = useRouter();
+
+  useEffect(() => {
+    if (isAuthenticated()) {
+      const role = localStorage.getItem("role");
+      if (role === "admin" || role === "resepsionis") {
+        // alert("Sign out to exit the page");
+        router.push("/admin/home"); // Redirect ke dashboard admin/resepsionis jika sudah login
+      } else if (role === "customer") {
+        // alert("Sign out to exit the page");
+        router.push("/customer/home"); // Redirect ke dashboard customer jika sudah login
+      }
+    }
+  }, []); 
 
   const handleAdd = (e) => {
     e.preventDefault();

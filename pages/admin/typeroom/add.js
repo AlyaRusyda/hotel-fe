@@ -8,7 +8,8 @@ export default function Login() {
   const [deskripsi, setDeskripsi] = useState("");
   const [foto, setFoto] = useState(null);
   const [error, setError] = useState(null);
-  const [token, setToken] = useState("")
+  const [token, setToken] = useState("");
+  const [role, setRole] = useState("")
 
   useEffect(() => {
     const storedToken = localStorage.getItem("token");
@@ -19,6 +20,21 @@ export default function Login() {
       window.location.href = "/"; 
     }
   }, []);
+
+  const checkRole = () => {
+    if (localStorage.getItem("token")) {
+      if (
+        localStorage.getItem("role") === "admin" ||
+        localStorage.getItem("role") === "resepsionis"
+      ) {
+        setToken(localStorage.getItem("token"));
+        setRole(localStorage.getItem("role"));
+      } else {
+        window.alert("You're not admin or resepsionis!");
+        window.location = "/";
+      }
+    }
+  };
 
   const handleAdd = (e) => {
     e.preventDefault();
@@ -33,20 +49,17 @@ export default function Login() {
     axios
       .post(url, form, headerConfig())
       .then((response) => {
-        // console.log("Response data:", response.data);
         if (response.data.message == `File size is too largee`) {
           setError("File size is too large. Please upload a smaller file.");
         } else if (response.data.message == `Tipe kamar yang anda inputkan sudah ada`) {
           setError("Typeroom already exist. Please change the typeroom")
         } 
         else if (response.status === 200) {
-          // console.log(response.data);
           alert("Success add data");
           window.location.href = "/admin/typeroom";
         }
       })
       .catch((error) => {
-        // console.log("error add data", error.response);
         if (error.response.status === 400) {
           setError(error.response.data.message); // Set error message from the response
         } else {
@@ -66,6 +79,10 @@ export default function Login() {
     };
     return header;
   };
+
+  useEffect(() => {
+    checkRole()
+  });
 
   return (
     <>

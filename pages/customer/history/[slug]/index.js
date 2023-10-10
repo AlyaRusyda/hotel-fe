@@ -5,10 +5,25 @@ import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
 
 export default function History() {
-  const [history, setHistory] = useState([]);
+  const [history, setHistory] = useState({
+    pemesanan: {
+      id: "",
+      nomor_pemesanan: "",
+      nama_tamu: "",
+      nama_pemesan: "",
+      tgl_pemesanan: "",
+      tgl_check_in: "",
+      tgl_check_out: "",
+      jumlah_kamar: 0,
+      tipeKamarId: 0,
+    },
+    nomor_kamar: [],
+  });
+  console.log(history);
   const [isClient, setIsClient] = useState("");
   const componentRef = useRef(null);
   const [token, setToken] = useState("");
+  const [role, setRole] = useState("");
 
   useEffect(() => {
     const storedToken = localStorage.getItem("token");
@@ -19,6 +34,18 @@ export default function History() {
       window.location.href = "/";
     }
   }, []);
+
+  const checkRole = () => {
+    if (localStorage.getItem("token")) {
+      if (localStorage.getItem("role") === "customer") {
+        setToken(localStorage.getItem("token"));
+        setRole(localStorage.getItem("role"));
+      } else {
+        // window.alert("You're not customer!");
+        // window.location = "/";
+      }
+    }
+  };
 
   const headerConfig = () => {
     let token = localStorage.getItem("token");
@@ -31,34 +58,33 @@ export default function History() {
   const getHistory = () => {
     const pathname = window.location.pathname;
     const id = pathname.split("/customer/history/");
-
     if (id) {
       const pesanId = id[1];
-
       let url = `http://localhost:3000/pesan/get/${pesanId}`;
-
+  
       axios
         .get(url, headerConfig())
         .then((response) => {
-          const formattedHistory = response.data.data.map((item) => {
-            const tglCheckIn = moment(item.tgl_check_in);
-            const tglCheckOut = moment(item.tgl_check_out);
-            const durasi = moment.duration(tglCheckOut.diff(tglCheckIn));
-            return {
-              ...item,
-              tgl_pemesanan: moment(item.tgl_pemesanan).format(
-                "DD-MM-YYYY HH:mm:ss"
-              ),
-              tgl_check_in: moment(item.tgl_check_in).format(
-                "DD-MM-YYYY HH:mm"
-              ),
-              tgl_check_out: moment(item.tgl_check_out).format(
-                "DD-MM-YYYY HH:mm"
-              ),
-              durasi: durasi.days(),
-            };
+          const pemesanan = response.data.data.pemesanan;
+          const formattedPemesanan = {
+            ...pemesanan,
+            tgl_pemesanan: moment(pemesanan.tgl_pemesanan).format("DD-MM-YYYY HH:mm:ss"),
+            tgl_check_in: moment(pemesanan.tgl_check_in).format("DD-MM-YYYY HH:mm"),
+            tgl_check_out: moment(pemesanan.tgl_check_out).format("DD-MM-YYYY HH:mm"),
+          };
+  
+          const checkIn = moment(pemesanan.tgl_check_in, "YYYY-MM-DDTHH:mm:ss.SSSZ");
+          const checkOut = moment(pemesanan.tgl_check_out, "YYYY-MM-DDTHH:mm:ss.SSSZ");
+          const duration = moment.duration(checkOut.diff(checkIn));
+          const days = duration.asDays(); // Calculate duration in days
+  
+          setHistory({
+            pemesanan: {
+              ...formattedPemesanan,
+              durasi: days, // Save duration in pemesanan object
+            },
+            nomor_kamar: response.data.data.nomor_kamar,
           });
-          setHistory(formattedHistory);
         })
         .catch((error) => {
           console.log(error);
@@ -88,6 +114,19 @@ export default function History() {
     getHistory();
   }, []);
 
+  useEffect(() => {
+    if (localStorage.getItem("token")) {
+      if (localStorage.getItem("role") === "customer") {
+        setToken(localStorage.getItem("token"));
+        setRole(localStorage.getItem("role"));
+      } else {
+        window.alert("You're not customer!");
+        window.location = "/";
+      }
+    }
+    checkRole();
+  }, []);
+
   return (
     <>
       {token ? (
@@ -104,11 +143,11 @@ export default function History() {
               className="w-full h-full absolute opacity-75 bg-black"
             ></span>
           </div>
-          <h1 className="text-2xl font-semibold mb-8 text-center text-white mt-12">
+          <h1 className="text-2xl font-semibold mb-8 text-center text-white mt-6">
             Invoice Transaction
           </h1>
-          {history.map((history, index) => (
-            <div key={index} className="flex justify-center">
+          {history.pemesanan && (
+            <div className="flex justify-center">
               <div
                 className="pl-5 py-6 pr-4 bg-white w-80 h-fit border border-gray-300 font-mono w-58mm"
                 ref={componentRef}
@@ -117,36 +156,50 @@ export default function History() {
                   <h1 className="text-xl font-semibold mb-2 mt-2">
                     TURU Hotel
                   </h1>
+                  <h2>Invoice #{history.pemesanan.id}</h2>
                   <h4>customerservice@turu.id</h4>
                   <h4>0371-000022</h4>
                 </div>
                 <div className="mt-8 leading-5 text-[13.5px]">
-                  <p>No Pemesanan: {history.nomor_pemesanan}</p>
+                  <p>No Pemesanan: {history.pemesanan.nomor_pemesanan}</p>
                   <p>
                     Tamu:{" "}
-                    <span className="capitalize">{history.nama_tamu}</span>
+                    <span className="capitalize">
+                      {history.pemesanan.nama_tamu}
+                    </span>
                   </p>
                   <p>
-                    User :{" "}
-                    <span className="capitalize">{history.user.nama_user}</span>
+                    User:{" "}
+                    <span className="capitalize">
+                      {history.pemesanan.nama_pemesan}
+                    </span>
                   </p>
-                  <p>Tanggal: {history.tgl_pemesanan}</p>
+                  <p>Tanggal: {history.pemesanan.tgl_pemesanan}</p>
                 </div>
 
                 <div className="text-[13.5px] mt-3">
-                  <p>Check In: {history.tgl_check_in}</p>
-                  <p>Check Out: {history.tgl_check_out}</p>
+                  <p>Check In: {history.pemesanan.tgl_check_in}</p>
+                  <p>Check Out: {history.pemesanan.tgl_check_out}</p>
                 </div>
 
                 <div className="mt-6">
-                  <p className="flex gap-32 capitalize">
-                    {history.tipe_kamar.nama_tipe_kamar} Room{" "}
-                    <span>{history.durasi} days</span>
+                  <p className="flex gap-[104px] capitalize">
+                    {history.pemesanan.nama_tipe_kamar} Room{" "}
+                    <span>{history.pemesanan.durasi} days</span>
+                  </p>
+                <p className="flex gap-2 text-sm">
+                    ( Room{" "}
+                    {history.nomor_kamar
+                      .slice(0, Math.ceil(history.nomor_kamar.length / 2))
+                      .map((roomNumber, index) => (
+                        <span key={index}>{roomNumber}</span>
+                      ))}
+                    )
                   </p>
                   <p className="ml-8 flex gap-[100px] mt-2">
-                    {history.jumlah_kamar} x {history.tipe_kamar.harga}
+                    {history.pemesanan.jumlah_kamar} x {history.pemesanan.harga}
                     <span className="right-0">
-                      {history.jumlah_kamar * history.tipe_kamar.harga}
+                      {history.pemesanan.jumlah_kamar * history.pemesanan.harga}
                     </span>
                   </p>
                 </div>
@@ -155,7 +208,9 @@ export default function History() {
                   <p className="ml-28 flex gap-[54px]">
                     Total:{" "}
                     <span className="right-0">
-                      {history.tipe_kamar.harga * history.durasi * history.jumlah_kamar}
+                      {history.pemesanan.jumlah_kamar *
+                        history.pemesanan.harga *
+                        history.pemesanan.durasi}
                     </span>
                   </p>
                 </div>
@@ -167,7 +222,8 @@ export default function History() {
                 </div>
               </div>
             </div>
-          ))}
+          )}
+
           <div className="flex justify-center">
             <button
               className="bg-blue-500 text-white font-semibold w-80 p-2 rounded-md mt-4"

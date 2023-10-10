@@ -9,6 +9,7 @@ export default function Login() {
   const [tgl_check_out, setCheckOut] = useState("");
   const [typeroom, setTyperoom] = useState("")
   const [token, setToken] = useState("");
+  const [role, setRole] = useState("")
 
   useEffect(() => {
     const storedToken = localStorage.getItem("token");
@@ -20,24 +21,26 @@ export default function Login() {
     }
   }, []);
 
+  const checkRole = () => {
+    if (localStorage.getItem("token")) {
+      if (
+        localStorage.getItem("role") === "customer"
+      ) {
+        setToken(localStorage.getItem("token"));
+        setRole(localStorage.getItem("role"));
+      } else {
+        window.alert("You're not customer!");
+        window.location = "/";
+      }
+    }
+  };
+
   const headerConfig = () => {
     let token = localStorage.getItem("token");
     let header = {
       headers: { Authorization: `Bearer ${token}` },
     };
     return header;
-  };
-
-  const getTypeRoom = () => {
-    let url = "http://localhost:3000/tipekamar/getAll/";
-    axios
-      .get(url, headerConfig())
-      .then((response) => {
-        setTyperoom(response.data.data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
   };
 
   const handleSubmit = (e) => {
@@ -58,7 +61,20 @@ export default function Login() {
         alert("Can't get available type at the moment.");
       });
   };
-  
+  useEffect(() => {
+    if (localStorage.getItem("token")) {
+      if (
+        localStorage.getItem("role") === "customer"
+      ) {
+        setToken(localStorage.getItem("token"));
+        setRole(localStorage.getItem("role"));
+      } else {
+        // window.alert("You're not admin or resepsionis!");
+        window.location = "/";
+      }
+    }
+    checkRole();
+  }, []);
 
   return (
     <>
@@ -135,6 +151,7 @@ export default function Login() {
                   value={tgl_check_out}
                   onChange={(e) => setCheckOut(e.target.value)}
                   className="p-4 w-48 rounded-md shadow-md"
+                  min={tgl_check_in}
                   required
                 />
                 </div>
@@ -167,7 +184,7 @@ export default function Login() {
                   {item.nama_tipe_kamar} <span className="text-md font-light">{item.nomor_kamar}</span>
                 </h3>
 
-                <p className="mt-1.5 text-sm text-gray-700">{item.deskripsi}</p>
+                <p className="mt-1.5 text-sm text-gray-700">{(item.deskripsi).slice(0, 50)} ...</p>
                 <a href={`/customer/add/${item.nama_tipe_kamar}`} className="mt-4 block w-full rounded bg-primary/20 p-4 text-sm font-medium transition hover:scale-105 text-center">
                   Book Now
                 </a>

@@ -14,6 +14,7 @@ export default function Login() {
   const [error, setError] = useState(null);
   const router = useRouter();
   const [token, setToken] = useState("");
+  const [role, setRole] = useState("")
 
   useEffect(() => {
     const storedToken = localStorage.getItem("token");
@@ -24,6 +25,20 @@ export default function Login() {
       window.location.href = "/";
     }
   }, []);
+
+  const checkRole = () => {
+    if (localStorage.getItem("token")) {
+      if (
+        localStorage.getItem("role") === "customer"
+      ) {
+        setToken(localStorage.getItem("token"));
+        setRole(localStorage.getItem("role"));
+      } else {
+        window.alert("You're not customer!");
+        window.location = "/";
+      }
+    }
+  };
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -75,6 +90,21 @@ export default function Login() {
     return header;
   };
 
+  useEffect(() => {
+    if (localStorage.getItem("token")) {
+      if (
+        localStorage.getItem("role") === "customer"
+      ) {
+        setToken(localStorage.getItem("token"));
+        setRole(localStorage.getItem("role"));
+      } else {
+        window.alert("You're not customer!");
+        // window.location = "/";
+      }
+    }
+    checkRole();
+  }, []);
+
   return (
     <>
       {token ? (
@@ -117,6 +147,7 @@ export default function Login() {
                     value={tgl_check_out}
                     onChange={(e) => setCheckOut(e.target.value)}
                     className="w-full px-3 py-2 placeholder-gray-400 border border-gray-300 rounded-md"
+                    min={tgl_check_in}
                     required
                   />
                 </div>

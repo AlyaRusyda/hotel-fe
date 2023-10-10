@@ -12,10 +12,10 @@ export default function Login() {
     if (isAuthenticated()) {
       const role = localStorage.getItem("role");
       if (role === "admin" || role === "resepsionis") {
-        alert("Sign out to exit the page");
+        // alert("Sign out to exit the page");
         router.push("/admin/home"); // Redirect ke dashboard admin/resepsionis jika sudah login
       } else if (role === "customer") {
-        alert("Sign out to exit the page");
+        // alert("Sign out to exit the page");
         router.push("/customer/home"); // Redirect ke dashboard customer jika sudah login
       }
     }

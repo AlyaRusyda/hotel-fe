@@ -9,13 +9,7 @@ const Navbar = () => {
   const [open, setOpen] = useState(false);
   const [user, setUser] = useState(null);
   const [modal, setModal] = useState(false);
-  const menuLinks = [
-    { name: "Home", link: "/admin/home" },
-    { name: "Type Room", link: "/admin/typeroom" },
-    { name: "Room", link: "/admin/room" },
-    { name: "User", link: "/admin/user" },
-    { name: "History", link: "/admin/history" },
-  ];
+  const [role, setRole] = useState("")
 
   const router = useRouter();
 
@@ -30,7 +24,7 @@ const Navbar = () => {
         nama_user: localStorage.getItem("nama_user"),
         foto: localStorage.getItem("foto"),
       };
-
+      setRole(userData.role)
       setUser(userData); // Set the user state with userData
     }
 
@@ -72,17 +66,59 @@ const Navbar = () => {
         </div>
         <div className="container flex justify-between h-16 mx-auto md:justify-end md:space-x-8">
           <ul className="items-stretch hidden space-x-3 md:flex -mr-16">
-            {menuLinks?.map((menu, index) => (
-              <li className="flex z-10" key={index}>
+          <li className="flex z-10">
+              <Link
+                rel="noopener noreferrer"
+                className="flex items-center px-4 mb-1 border-b-2 border-transparent hover:text-blue-300 uppercase"
+                href="/admin/home"
+              >
+                Home
+              </Link>
+            </li>
+            {role === "admin" ? (
+              <li className="flex z-10">
                 <Link
                   rel="noopener noreferrer"
                   className="flex items-center px-4 mb-1 border-b-2 border-transparent hover:text-blue-300 uppercase"
-                  href={menu.link}
+                  href="/admin/typeroom"
                 >
-                  {menu.name}
+                  Typeroom
                 </Link>
               </li>
-            ))}
+            ) : null}
+            {role === "admin" ? (
+              <li className="flex z-10">
+                <Link
+                  rel="noopener noreferrer"
+                  className="flex items-center px-4 mb-1 border-b-2 border-transparent hover:text-blue-300 uppercase"
+                  href="/admin/room"
+                >
+                  Room
+                </Link>
+              </li>
+            ) : null}
+            {role === "admin" ? (
+              <li className="flex z-10">
+                <Link
+                  rel="noopener noreferrer"
+                  className="flex items-center px-4 mb-1 border-b-2 border-transparent hover:text-blue-300 uppercase"
+                  href="/admin/user"
+                >
+                  User
+                </Link>
+              </li>
+            ) : null}
+            {role === "resepsionis" ? (
+              <li className="flex z-10">
+                <Link
+                  rel="noopener noreferrer"
+                  className="flex items-center px-4 mb-1 border-b-2 border-transparent hover:text-blue-300 uppercase"
+                  href="/admin/history"
+                >
+                  History
+                </Link>
+              </li>
+            ) : null}
             <li className="py-2 z-0">
               <button onClick={() => setModal(!modal)}>
                 {user && ( // Check if user is defined before using it
@@ -162,15 +198,44 @@ const Navbar = () => {
           } ${open ? "top-0" : "top-[-100%]"}`}
         >
           <ul className="flex flex-col justify-center h-full gap-10 py-2 text-lg">
-            {menuLinks?.map((menu, i) => (
+            <li
+              onClick={() => setOpen(false)}
+              className="px-6 hover:text-gray-400"
+            >
+              <Link href="/admin/home">Home</Link>
+            </li>
+            {role === "admin" ? (
               <li
                 onClick={() => setOpen(false)}
-                key={i}
                 className="px-6 hover:text-gray-400"
               >
-                <Link href={menu?.link}>{menu?.name}</Link>
+                <Link href="/admin/typeroom">TypeRoom</Link>
               </li>
-            ))}
+            ) : null}
+            {role === "admin" ? (
+              <li
+                onClick={() => setOpen(false)}
+                className="px-6 hover:text-gray-400"
+              >
+                <Link href="/admin/room">Room</Link>
+              </li>
+            ) : null}
+            {role === "admin" ? (
+              <li
+                onClick={() => setOpen(false)}
+                className="px-6 hover:text-gray-400"
+              >
+                <Link href="/admin/user">User</Link>
+              </li>
+            ) : null}
+            {role === "resepsionis" ? (
+              <li
+                onClick={() => setOpen(false)}
+                className="px-6 hover:text-gray-400"
+              >
+                <Link href="/admin/history">History</Link>
+              </li>
+            ) : null}
             <li className="my-px ml-4" onClick={() => logOut()}>
               <Link
                 href="/"

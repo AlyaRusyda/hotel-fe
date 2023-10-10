@@ -15,6 +15,7 @@ export default function Login() {
   const [error, setError] = useState(null);
   const router = useRouter();
   const [token, setToken] = useState("");
+  const [role, setRole] = useState("")
 
   useEffect(() => {
     const storedToken = localStorage.getItem("token");
@@ -64,7 +65,8 @@ export default function Login() {
       await axios.post(url, form, headerConfig());
       window.alert("Success transaction");
       router.push("/customer/history");
-    } catch (error) {
+    } 
+    catch (error) {
       if (error.response && error.response.status === 400) {
         setError(error.response.data.message); // Set error message from the response
       } else {
@@ -80,6 +82,35 @@ export default function Login() {
     };
     return header;
   };
+
+  const checkRole = () => {
+    if (localStorage.getItem("token")) {
+      if (
+        localStorage.getItem("role") === "customer"
+      ) {
+        setToken(localStorage.getItem("token"));
+        setRole(localStorage.getItem("role"));
+      } else {
+        window.alert("You're not customer!");
+        window.location = "/";
+      }
+    }
+  };
+
+  useEffect(() => {
+    if (localStorage.getItem("token")) {
+      if (
+        localStorage.getItem("role") === "customer"
+      ) {
+        setToken(localStorage.getItem("token"));
+        setRole(localStorage.getItem("role"));
+      } else {
+        // window.alert("You're not customer!");
+        // window.location = "/";
+      }
+    }
+    checkRole();
+  }, []);
 
   return (
     <>

@@ -130,7 +130,7 @@ export default function History() {
   const handleSearchTgl = (e) => {
     const value = e.target.value.toLowerCase();
     setTgl(value);
-    const filteredHistory = originalHistory.filter((type) => {
+    const filteredHistory = history.filter((type) => {
       const formattedCheckInDate = type.tgl_check_in.split('T')[0]; 
       return formattedCheckInDate.includes(value);
     });
@@ -146,7 +146,7 @@ export default function History() {
         setToken(localStorage.getItem("token"));
         setRole(localStorage.getItem("role"));
       } else {
-        window.alert("You're not admin or resepsionis!");
+        // window.alert("You're not admin or resepsionis!");
         window.location = "/";
       }
     }

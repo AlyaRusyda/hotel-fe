@@ -21,6 +21,21 @@ export default function Login() {
     }
   }, []);
 
+  const checkRole = () => {
+    if (localStorage.getItem("token")) {
+      if (
+        localStorage.getItem("role") === "admin" ||
+        localStorage.getItem("role") === "resepsionis"
+      ) {
+        setToken(localStorage.getItem("token"));
+        setRole(localStorage.getItem("role"));
+      } else {
+        window.alert("You're not admin or resepsionis!");
+        window.location = "/";
+      }
+    }
+  };
+
   const handleAdd = (e) => {
     e.preventDefault();
     let form = new FormData();
@@ -41,13 +56,11 @@ export default function Login() {
           setError("Email already exist. Please change your email")
         } 
         else if (response.status === 200) {
-          // console.log(response.data);
           alert("Success add data");
           window.location.href = "/admin/user";
         }
       })
       .catch((error) => {
-        // console.log("error add data", error.response);
         if (error.response && error.response.data) {
           setError(error.response.data.message); // Mengatur pesan kesalahan dari respons server
         } else {
@@ -59,6 +72,10 @@ export default function Login() {
   const handleFile = (e) => {
     setFoto(e.target.files[0]);
   };
+
+  useEffect(() => {
+    checkRole()
+  });
 
   return (
     <>
