@@ -40,8 +40,8 @@ export default function History() {
         setToken(localStorage.getItem("token"));
         setRole(localStorage.getItem("role"));
       } else {
-        // window.alert("You're not customer!");
-        // window.location = "/";
+        window.alert("You're not customer!");
+        window.location = "/";
       }
     }
   };
@@ -76,13 +76,16 @@ export default function History() {
           const checkOut = moment(pemesanan.tgl_check_out, "YYYY-MM-DDTHH:mm:ss.SSSZ");
           const duration = moment.duration(checkOut.diff(checkIn));
           const days = duration.asDays(); // Calculate duration in days
-  
+
+          // Menghapus nilai duplikat dari nomor_kamar menggunakan Set
+          const uniqueNomorKamar = Array.from(new Set(response.data.data.nomor_kamar));
+
           setHistory({
             pemesanan: {
               ...formattedPemesanan,
               durasi: days, // Save duration in pemesanan object
             },
-            nomor_kamar: response.data.data.nomor_kamar,
+            nomor_kamar: uniqueNomorKamar,
           });
         })
         .catch((error) => {
@@ -189,7 +192,6 @@ export default function History() {
                 <p className="flex gap-2 text-sm">
                     ( Room{" "}
                     {history.nomor_kamar
-                      .slice(0, Math.ceil(history.nomor_kamar.length / 2))
                       .map((roomNumber, index) => (
                         <span key={index}>{roomNumber}</span>
                       ))}
